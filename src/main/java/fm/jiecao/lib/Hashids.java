@@ -11,9 +11,11 @@ import java.util.*;
  * @since 0.3.3
  */
 public class Hashids {
+  private static final String DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
   private String version = "0.3.3";
   private String salt = "";
-  private String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  private String alphabet = "";
   private String seps = "cfhistuCFHISTU";
   private int minHashLength = 0;
   private double sepDiv = 3.5;
@@ -274,6 +276,15 @@ public class Hashids {
     }
 
     return Long.valueOf(number);
+  }
+
+  public static int checkedCast(long value) {
+    int result = (int) value;
+    if (result != value) {
+      // don't use checkArgument here, to avoid boxing
+      throw new IllegalArgumentException("Out of range: " + value);
+    }
+    return result;
   }
 
   public String getVersion() {
