@@ -2,25 +2,26 @@ package fm.jiecao.lib;
 
 import java.util.*;
 
+/**
+ * Hashids designed for Generating short hashes from numbers (like YouTube and Bitly), obfuscate
+ * database IDs, use them as forgotten password hashes, invitation codes, store shard numbers
+ * This is implementation of http://hashids.org v0.3.3 version.
+ *
+ * @author fanweixiao <fanweixiao@gmail.com>
+ * @since 0.3.3
+ */
 public class Hashids {
   private static final String DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-  private static final String SEPS = "cfhistuCFHISTU";
 
+  private String version = "0.3.3";
   private String salt = "";
-  private String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-  private int minHashLength = 0;
+  private String alphabet = "";
   private String seps = "cfhistuCFHISTU";
+  private int minHashLength = 0;
   private double sepDiv = 3.5;
   private int guardDiv = 12;
   private int minAlphabetLength = 16;
-
-  public int getMinHashLength() {
-    return minHashLength;
-  }
-
   private String guards;
-
-  private String version = "0.3.3";
 
   public Hashids() throws Exception {
     this("");
@@ -52,11 +53,11 @@ public class Hashids {
     this.alphabet = uniqueAlphabet;
 
     if(this.alphabet.length() < this.minAlphabetLength){
-      throw new Exception("less than minHashLength");
+      throw new IllegalArgumentException("alphabet must contain at least " + this.minAlphabetLength + " unique characters");
     }
 
     if(this.alphabet.contains(" ")){
-      throw new Exception("alphabet can not contains space");
+      throw new IllegalArgumentException("alphabet cannot contains spaces");
     }
 
     // seps should contain only characters present in alphabet;
@@ -102,10 +103,12 @@ public class Hashids {
     }
   }
 
-  public String getVersion() {
-    return version;
-  }
-
+  /**
+   * Encrypt numbers to string
+   *
+   * @param numbers the numbers to encrypt
+   * @return the encrypt string
+   */
   public String encrypt(long... numbers){
     String retval = "";
     if(numbers.length == 0) {
@@ -115,6 +118,12 @@ public class Hashids {
     return this.encode(numbers);
   }
 
+  /**
+   * Decrypt string to numbers
+   *
+   * @param hash the encrypt string
+   * @return decryped numbers
+   */
   public long[] decrypt(String hash){
     long[] ret = {};
 
@@ -167,20 +176,21 @@ public class Hashids {
       }
     }
 
-    int halfLen = (int)(this.alphabet.length() / 2);
+    int halfLen = (int)(alphabet.length() / 2);
     while(ret_str.length() < this.minHashLength){
-      this.alphabet = this.consistentShuffle(this.alphabet, this.alphabet);
-      ret_str = this.alphabet.substring(halfLen) + ret_str + this.alphabet.substring(0, halfLen);
+      alphabet = this.consistentShuffle(alphabet, alphabet);
+      ret_str = alphabet.substring(halfLen) + ret_str + alphabet.substring(0, halfLen);
       int excess = ret_str.length() - this.minHashLength;
       if(excess > 0){
-        ret_str = ret_str.substring(excess / 2, this.minHashLength);
+        int start_pos = excess / 2;
+        ret_str = ret_str.substring(start_pos, start_pos + this.minHashLength);
       }
     }
 
     return ret_str;
   }
 
-  public long[] decode(String hash, String alphabet){
+  private long[] decode(String hash, String alphabet){
     ArrayList<Long> ret = new ArrayList<Long>();
 
     int i = 0;
@@ -269,32 +279,16 @@ public class Hashids {
     return Long.valueOf(number);
   }
 
-  /* for debug only */
-  public String getGuards() {
-    return guards;
+  public static int checkedCast(long value) {
+    int result = (int) value;
+    if (result != value) {
+      // don't use checkArgument here, to avoid boxing
+      throw new IllegalArgumentException("Out of range: " + value);
+    }
+    return result;
   }
 
-  public String getSeps() {
-    return seps;
-  }
-
-  public double getSepDiv() {
-    return sepDiv;
-  }
-
-  public int getGuardDiv() {
-    return guardDiv;
-  }
-
-  public String getSalt() {
-    return salt;
-  }
-
-  public String getAlphabet() {
-    return alphabet;
-  }
-
-  public int getMinAlphabetLength() {
-    return minAlphabetLength;
+  public String getVersion() {
+    return version;
   }
 }
