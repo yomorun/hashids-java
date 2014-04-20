@@ -37,11 +37,11 @@ You can pass a unique salt value so your hashes differ from everyone else's. I u
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash = hashids.encrypt(12345);
+String hash = hashids.encrypt(12345L);
 ```
 
 `hash` is now going to be:
-	
+
 	NkK9
 
 #### Decrypting
@@ -55,7 +55,7 @@ long[] numbers = hashids.decrypt("NkK9");
 ```
 
 `numbers` is now going to be:
-	
+
 	[ 12345 ]
 
 #### Decrypting with different salt
@@ -69,21 +69,21 @@ long[] numbers = hashids.decrypt("NkK9");
 ```
 
 `numbers` is now going to be:
-	
+
 	[]
-	
+
 #### Encrypting several numbers
 
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash = hashids.encrypt(683, 94108, 123, 5);
+String hash = hashids.encrypt(683L, 94108L, 123L, 5L);
 ```
 
 `hash` is now going to be:
-	
+
 	aBMswoO2UB3Sj
-	
+
 #### Decrypting is done the same way
 
 ```java
@@ -93,9 +93,9 @@ long[] numbers = hashids.decrypt("aBMswoO2UB3Sj");
 ```
 
 `numbers` is now going to be:
-	
+
 	[ 683, 94108, 123, 5 ]
-	
+
 #### Encrypting and specifying minimum hash length
 
 Here we encrypt integer 1, and set the minimum hash length to **8** (by default it's **0** -- meaning hashes will be the shortest possible length).
@@ -103,13 +103,13 @@ Here we encrypt integer 1, and set the minimum hash length to **8** (by default 
 ```java
 
 Hashids hashids = new Hashids("this is my salt", 8);
-String hash = hashids.encrypt(1);
+String hash = hashids.encrypt(1L);
 ```
 
 `hash` is now going to be:
-	
+
 	gB0NV05e
-	
+
 #### Decrypting
 
 ```java
@@ -119,9 +119,9 @@ long[] numbers = hashids.decrypt("gB0NV05e");
 ```
 
 `numbers` is now going to be:
-	
+
 	[ 1 ]
-	
+
 #### Specifying custom hash alphabet
 
 Here we set the alphabet to consist of only four letters: "0123456789abcdef"
@@ -129,13 +129,13 @@ Here we set the alphabet to consist of only four letters: "0123456789abcdef"
 ```java
 
 Hashids hashids = new Hashids("this is my salt", 0, "0123456789abcdef");
-String hash = hashids.encrypt(1234567);
+String hash = hashids.encrypt(1234567L);
 ```
 
 `hash` is now going to be:
-	
+
 	b332db5
-	
+
 ## Randomness
 
 The primary purpose of hashids is to obfuscate ids. It's not meant or tested to be used for security purposes or compression.
@@ -146,7 +146,7 @@ Having said that, this algorithm does try to make these hashes unguessable and u
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash = hashids.encrypt(5, 5, 5, 5);
+String hash = hashids.encrypt(5L, 5L, 5L, 5L);
 ```
 
 You don't see any repeating patterns that might show there's 4 identical numbers in the hash:
@@ -158,23 +158,23 @@ Same with incremented numbers:
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash = hashids.encrypt(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+String hash = hashids.encrypt(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
 ```
 
 `hash` will be :
-	
+
 	kRHnurhptKcjIDTWC3sx
-	
+
 ### Incrementing number hashes:
 
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash1 = hashids.encrypt(1); /* NV */
-String hash2 = hashids.encrypt(2); /* 6m */
-String hash3 = hashids.encrypt(3); /* yD */
-String hash4 = hashids.encrypt(4); /* 2l */
-String hash5 = hashids.encrypt(5); /* rD */
+String hash1 = hashids.encrypt(1L); /* NV */
+String hash2 = hashids.encrypt(2L); /* 6m */
+String hash3 = hashids.encrypt(3L); /* yD */
+String hash4 = hashids.encrypt(4L); /* 2l */
+String hash5 = hashids.encrypt(5L); /* rD */
 ```
 
 ## Bad hashes
@@ -182,9 +182,9 @@ String hash5 = hashids.encrypt(5); /* rD */
 I wrote this class with the intent of placing these hashes in visible places - like the URL. If I create a unique hash for each user, it would be unfortunate if the hash ended up accidentally being a bad word. Imagine auto-creating a URL with hash for your user that looks like this - `http://example.com/user/a**hole`
 
 Therefore, this algorithm tries to avoid generating most common English curse words with the default alphabet. This is done by never placing the following letters next to each other:
-	
+
 	c, C, s, S, f, F, h, H, u, U, i, I, t, T
-	
+
 ## Contact
 
 Follow me [@fanweixiao](https://twitter.com/fanweixiao) or [@IvanAkimov](http://twitter.com/ivanakimov)
