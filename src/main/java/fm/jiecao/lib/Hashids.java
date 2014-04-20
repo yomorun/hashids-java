@@ -176,13 +176,14 @@ public class Hashids {
       }
     }
 
-    int halfLen = (int)(this.alphabet.length() / 2);
+    int halfLen = (int)(alphabet.length() / 2);
     while(ret_str.length() < this.minHashLength){
-      this.alphabet = this.consistentShuffle(this.alphabet, this.alphabet);
-      ret_str = this.alphabet.substring(halfLen) + ret_str + this.alphabet.substring(0, halfLen);
+      alphabet = this.consistentShuffle(alphabet, alphabet);
+      ret_str = alphabet.substring(halfLen) + ret_str + alphabet.substring(0, halfLen);
       int excess = ret_str.length() - this.minHashLength;
       if(excess > 0){
-        ret_str = ret_str.substring(excess / 2, this.minHashLength);
+        int start_pos = excess / 2;
+        ret_str = ret_str.substring(start_pos, start_pos + this.minHashLength);
       }
     }
 
