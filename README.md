@@ -1,5 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/jiecao-fm/hashids-java.png?label=ready&title=Ready)](https://waffle.io/jiecao-fm/hashids-java)
-# Hashids.java
+# Hashids.java [![Stories in Ready](https://badge.waffle.io/jiecao-fm/hashids-java.png?label=ready&title=Ready)](https://waffle.io/jiecao-fm/hashids-java)
 
 A small Java class to generate YouTube-like hashes from one or many numbers.
 
