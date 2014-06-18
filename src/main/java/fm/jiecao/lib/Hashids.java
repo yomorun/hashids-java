@@ -276,7 +276,7 @@ public class Hashids {
       number += pos * Math.pow(alphabet.length(), input.length() - i - 1);
     }
 
-    return Long.valueOf(number);
+    return number;
   }
 
   public static int checkedCast(long value) {
