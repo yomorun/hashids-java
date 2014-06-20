@@ -127,4 +127,15 @@ public class HashidsTest {
     Assert.assertEquals(a.encrypt(4L), "2l");
     Assert.assertEquals(a.encrypt(5L), "rD");
     }
+    
+    @Test
+    public void test_for_vlues_greater_int_maxval(){
+    Hashids a = null;
+    try {
+      a = new Hashids("this is my salt");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Assert.assertEquals(a.encrypt(9876543210123L), "Y8r7W1kNN");
+    }
 }

@@ -151,7 +151,7 @@ public class Hashids {
       buffer = lottery + this.salt + alphabet;
 
       alphabet = this.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
-      String last = this.hash((int)num, alphabet);
+      String last = this.hash(num, alphabet);
 
       ret_str += last;
 
@@ -254,13 +254,13 @@ public class Hashids {
     return alphabet;
   }
 
-  private String hash(int input, String alphabet){
+  private String hash(long input, String alphabet){
     String hash = "";
     int alphabetLen = alphabet.length();
     char[] arr = alphabet.toCharArray();
 
     do {
-      hash = arr[input % alphabetLen] + hash;
+      hash = arr[(int)(input % alphabetLen)] + hash;
       input /= alphabetLen;
     } while(input > 0);
 
@@ -268,7 +268,7 @@ public class Hashids {
   }
 
   private Long unhash(String input, String alphabet){
-    int number = 0, pos;
+    long number = 0, pos;
     char[] input_arr = input.toCharArray();
 
     for(int i = 0; i < input.length(); i++){
@@ -276,7 +276,7 @@ public class Hashids {
       number += pos * Math.pow(alphabet.length(), input.length() - i - 1);
     }
 
-    return Long.valueOf(number);
+    return number;
   }
 
   public static int checkedCast(long value) {
