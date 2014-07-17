@@ -133,6 +133,46 @@ public class Hashids {
     return this.decode(hash, this.alphabet);
   }
 
+  /**
+   * Encrypt hexa to string
+   *
+   * @param hexa the hexa to encrypt
+   * @return the encrypt string
+   */
+  public String encryptHex(String hexa){
+      if(!hexa.matches("^[0-9a-fA-F]+$"))
+          return "";
+
+      List<Long> matched = new ArrayList<Long>();
+      Matcher matcher = Pattern.compile("[\\w\\W]{1,12}").matcher(hexa);
+
+      while (matcher.find())
+          matched.add(Long.parseLong("1" + matcher.group(), 16));
+
+      // conversion
+      long[] result = new long[matched.size()];
+      for(int i = 0; i < matched.size(); i++) result[i] = matched.get(i);
+
+      return this.encode(result);
+  }
+
+  /**
+   * Decrypt string to numbers
+   *
+   * @param hash the encrypt string
+   * @return decryped numbers
+   */
+  public String decryptHex(String hash){
+      String result = "";
+      long[] numbers = this.decrypt(hash);
+
+      for (int i = 0; i < numbers.length; i++) {
+          result += Long.toHexString(numbers[i]).substring(1);
+      }
+
+      return result;
+  }
+  
   private String encode(long... numbers){
     int numberHashInt = 0;
     for(int i = 0; i < numbers.length; i++){
