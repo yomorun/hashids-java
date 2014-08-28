@@ -9,24 +9,6 @@ import fm.jiecao.lib.Hashids;
 
 public class HashidsTest {
 
-  @Test
-  public void test_specifying_custom_hash_alphabet(){
-    Hashids a = null;
-    String expected = "mk2p5d9qxy8wrlba", res= "";
-    long num_to_hash = 11818L;
-    long[] res2;
-    try {
-      a = new Hashids("huanxin", 16, "0123456789abcdefgh");
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    res = a.encrypt(num_to_hash);
-    Assert.assertEquals(res, expected);
-    res2 = a.decrypt(expected);
-    Assert.assertEquals(res2.length, 1);
-    Assert.assertEquals(res2[0], num_to_hash);
-  }
-
 	@Test
 	public void test_one_number(){
     Hashids a = null;

@@ -13,7 +13,6 @@ import java.util.*;
 public class Hashids {
   private static final String DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-  private String version = "0.3.3";
   private String salt = "";
   private String alphabet = "";
   private String seps = "cfhistuCFHISTU";
@@ -75,7 +74,7 @@ public class Hashids {
     this.seps = this.seps.replaceAll("\\s+", "");
     this.seps = this.consistentShuffle(this.seps, this.salt);
 
-    if((this.seps == "") || ((this.alphabet.length() / this.seps.length()) > this.sepDiv)){
+    if((this.seps.equals("")) || ((this.alphabet.length() / this.seps.length()) > this.sepDiv)){
       int seps_len = (int)Math.ceil(this.alphabet.length() / this.sepDiv);
 
       if(seps_len == 1){
@@ -92,7 +91,8 @@ public class Hashids {
     }
 
     this.alphabet = this.consistentShuffle(this.alphabet, this.salt);
-    int guardCount = (int)Math.ceil(this.alphabet.length() / this.guardDiv);
+    // use double to round up
+    int guardCount = (int)Math.ceil((double)this.alphabet.length() / this.guardDiv);
 
     if(this.alphabet.length() < 3){
       this.guards = this.seps.substring(0, guardCount);
@@ -127,7 +127,7 @@ public class Hashids {
   public long[] decrypt(String hash){
     long[] ret = {};
 
-    if(hash == "")
+    if(hash.equals(""))
       return ret;
 
     return this.decode(hash, this.alphabet);
@@ -143,7 +143,7 @@ public class Hashids {
     char lottery = ret;
     long num;
     int sepsIndex, guardIndex;
-    String buffer = "", ret_str = ret + "";
+    String buffer, ret_str = ret + "";
     char guard;
 
     for(int i = 0; i < numbers.length; i++){
@@ -176,7 +176,7 @@ public class Hashids {
       }
     }
 
-    int halfLen = (int)(alphabet.length() / 2);
+    int halfLen = alphabet.length() / 2;
     while(ret_str.length() < this.minHashLength){
       alphabet = this.consistentShuffle(alphabet, alphabet);
       ret_str = alphabet.substring(halfLen) + ret_str + alphabet.substring(0, halfLen);
@@ -289,6 +289,6 @@ public class Hashids {
   }
 
   public String getVersion() {
-    return version;
+    return "0.3.3";
   }
 }
