@@ -198,10 +198,11 @@ public class Hashids {
     String hashBreakdown = hash.replaceAll(regexp, " ");
     String[] hashArray = hashBreakdown.split(" ");
 
-    String op = "";
+    // is not used - its for debug?
+    /*String op = "";
     for(String tmp : hashArray){
       op += tmp + ", ";
-    }
+    }*/
 
     if(hashArray.length == 3 || hashArray.length == 2){
       i = 1;
