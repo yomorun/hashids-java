@@ -5,14 +5,12 @@ import java.util.Arrays;
 import org.junit.Test;
 import junit.framework.Assert;
 
-import fm.jiecao.lib.Hashids;
-
 public class HashidsTest {
 
 	@Test
 	public void test_one_number(){
     Hashids a = null;
-    String expected = "NkK9", res= "";
+    String expected = "NkK9", res;
     long num_to_hash = 12345L;
     long[] res2;
     try {
@@ -20,9 +18,9 @@ public class HashidsTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    res = a.encrypt(num_to_hash);
+    res = a.encode(num_to_hash);
     Assert.assertEquals(res, expected);
-    res2 = a.decrypt(expected);
+    res2 = a.decode(expected);
     Assert.assertEquals(res2.length, 1);
     Assert.assertEquals(res2[0], num_to_hash);
 	}
@@ -37,9 +35,9 @@ public class HashidsTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    res = a.encrypt(num_to_hash);
+    res = a.encode(num_to_hash);
     Assert.assertEquals(res, expected);
-    res2 = a.decrypt(expected);
+    res2 = a.decode(expected);
     Assert.assertEquals(res2.length, num_to_hash.length);
     Assert.assertTrue(Arrays.equals(res2, num_to_hash));
 	}
@@ -55,9 +53,9 @@ public class HashidsTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    res = a.encrypt(num_to_hash);
+    res = a.encode(num_to_hash);
     Assert.assertEquals(res, expected);
-    res2 = a.decrypt(expected);
+    res2 = a.decode(expected);
     Assert.assertEquals(res2.length, 1);
     Assert.assertEquals(res2[0], num_to_hash);
   }
@@ -72,9 +70,9 @@ public class HashidsTest {
   } catch (Exception e) {
     e.printStackTrace();
   }
-  res = a.encrypt(num_to_hash);
+  res = a.encode(num_to_hash);
   Assert.assertEquals(res, expected);
-  res2 = a.decrypt(expected);
+  res2 = a.decode(expected);
   Assert.assertEquals(res2.length, num_to_hash.length);
   Assert.assertTrue(Arrays.equals(res2, num_to_hash));
   }
@@ -89,9 +87,9 @@ public class HashidsTest {
   } catch (Exception e) {
     e.printStackTrace();
   }
-  res = a.encrypt(num_to_hash);
+  res = a.encode(num_to_hash);
   Assert.assertEquals(res, expected);
-  res2 = a.decrypt(expected);
+  res2 = a.decode(expected);
   Assert.assertEquals(res2.length, num_to_hash.length);
   Assert.assertTrue(Arrays.equals(res2, num_to_hash));
   }
@@ -104,11 +102,11 @@ public class HashidsTest {
   } catch (Exception e) {
     e.printStackTrace();
   }
-  Assert.assertEquals(a.encrypt(1L), "NV");
-  Assert.assertEquals(a.encrypt(2L), "6m");
-  Assert.assertEquals(a.encrypt(3L), "yD");
-  Assert.assertEquals(a.encrypt(4L), "2l");
-  Assert.assertEquals(a.encrypt(5L), "rD");
+  Assert.assertEquals(a.encode(1L), "NV");
+  Assert.assertEquals(a.encode(2L), "6m");
+  Assert.assertEquals(a.encode(3L), "yD");
+  Assert.assertEquals(a.encode(4L), "2l");
+  Assert.assertEquals(a.encode(5L), "rD");
   }
 
   @Test
@@ -119,7 +117,7 @@ public class HashidsTest {
   } catch (Exception e) {
     e.printStackTrace();
   }
-  Assert.assertEquals(a.encrypt(9876543210123L), "Y8r7W1kNN");
+  Assert.assertEquals(a.encode(9876543210123L), "Y8r7W1kNN");
 }
 
 	@Test
@@ -133,9 +131,9 @@ public class HashidsTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		res = a.encrypt(num_to_hash);
+		res = a.encode(num_to_hash);
 		Assert.assertEquals(res, expected);
-		res2 = a.decrypt(expected);
+		res2 = a.decode(expected);
 		Assert.assertEquals(res2.length, 1);
 		Assert.assertEquals(res2[0], num_to_hash);
 	}

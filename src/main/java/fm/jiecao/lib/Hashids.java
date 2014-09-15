@@ -1,6 +1,8 @@
 package fm.jiecao.lib;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Hashids designed for Generating short hashes from numbers (like YouTube and Bitly), obfuscate
@@ -103,19 +105,54 @@ public class Hashids {
     }
   }
 
+	/**
+	 * @deprecated
+	 * should use encode() since v1.0
+	 */
+	@Deprecated
+  public String encrypt(long... numbers){
+		return encode(numbers);
+  }
+	/**
+	 * @deprecated
+	 * should use decode() since v1.0
+	 */
+	@Deprecated
+	public long[] decrypt(String hash){
+		return decode(hash);
+	}
+
+	/**
+	 * @deprecated
+	 * should use encodeHex() since v1.0
+	 */
+	@Deprecated
+	public String encryptHex(String hexa){
+		return encodeHex(hexa);
+	}
+
+	/**
+	 * @deprecated
+	 * should use decodeHex() since v1.0
+	 */
+	@Deprecated
+	public String decryptHex(String hash){
+		return decodeHex(hash);
+	}
+
   /**
    * Encrypt numbers to string
    *
    * @param numbers the numbers to encrypt
    * @return the encrypt string
    */
-  public String encrypt(long... numbers){
+  public String encode(long... numbers){
     String retval = "";
     if(numbers.length == 0) {
       return retval;
     }
 
-    return this.encode(numbers);
+    return this._encode(numbers);
   }
 
   /**
@@ -124,13 +161,13 @@ public class Hashids {
    * @param hash the encrypt string
    * @return decryped numbers
    */
-  public long[] decrypt(String hash){
+  public long[] decode(String hash){
     long[] ret = {};
 
     if(hash.equals(""))
       return ret;
 
-    return this.decode(hash, this.alphabet);
+    return this._decode(hash, this.alphabet);
   }
 
   /**
@@ -139,7 +176,7 @@ public class Hashids {
    * @param hexa the hexa to encrypt
    * @return the encrypt string
    */
-  public String encryptHex(String hexa){
+  public String encodeHex(String hexa){
       if(!hexa.matches("^[0-9a-fA-F]+$"))
           return "";
 
@@ -153,7 +190,7 @@ public class Hashids {
       long[] result = new long[matched.size()];
       for(int i = 0; i < matched.size(); i++) result[i] = matched.get(i);
 
-      return this.encode(result);
+      return this._encode(result);
   }
 
   /**
@@ -162,18 +199,18 @@ public class Hashids {
    * @param hash the encrypt string
    * @return decryped numbers
    */
-  public String decryptHex(String hash){
+  public String decodeHex(String hash){
       String result = "";
       long[] numbers = this.decrypt(hash);
 
-      for (int i = 0; i < numbers.length; i++) {
-          result += Long.toHexString(numbers[i]).substring(1);
-      }
+	  for (long number : numbers) {
+		  result += Long.toHexString(number).substring(1);
+	  }
 
       return result;
   }
   
-  private String encode(long... numbers){
+  private String _encode(long... numbers){
     int numberHashInt = 0;
     for(int i = 0; i < numbers.length; i++){
       numberHashInt += (numbers[i] % (i+100));
@@ -230,19 +267,13 @@ public class Hashids {
     return ret_str;
   }
 
-  private long[] decode(String hash, String alphabet){
+  private long[] _decode(String hash, String alphabet){
     ArrayList<Long> ret = new ArrayList<Long>();
 
     int i = 0;
     String regexp = "[" + this.guards + "]";
     String hashBreakdown = hash.replaceAll(regexp, " ");
     String[] hashArray = hashBreakdown.split(" ");
-
-    // is not used - its for debug?
-    /*String op = "";
-    for(String tmp : hashArray){
-      op += tmp + ", ";
-    }*/
 
     if(hashArray.length == 3 || hashArray.length == 2){
       i = 1;
@@ -255,16 +286,15 @@ public class Hashids {
     hashBreakdown = hashBreakdown.replaceAll("[" + this.seps + "]", " ");
     hashArray = hashBreakdown.split(" ");
 
-    String subHash = "", buffer = "";
-    for(int j = 0; j < hashArray.length; j++){
-      subHash = hashArray[j];
-      buffer = lottery + this.salt + alphabet;
-      alphabet = this.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
-      ret.add(this.unhash(subHash, alphabet));
-    }
+    String subHash, buffer;
+	  for (String aHashArray : hashArray) {
+		  subHash = aHashArray;
+		  buffer = lottery + this.salt + alphabet;
+		  alphabet = this.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
+		  ret.add(this.unhash(subHash, alphabet));
+	  }
 
     //transform from List<Long> to long[]
-
     long[] arr = new long[ret.size()];
     for(int k = 0; k < arr.length; k++){
       arr[k] = ret.get(k);
@@ -329,7 +359,12 @@ public class Hashids {
     return result;
   }
 
+	/**
+	 * Get version
+	 *
+	 * @return version
+	 */
   public String getVersion() {
-    return "0.3.3";
+    return "1.0.0";
   }
 }
