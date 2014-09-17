@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fm.jiecao.lib</groupId>
   <artifactId>hashids</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>hashids</name>
   <description>Impelementing Hashids algorithm v1.0.0 version(http://hashids.org)</description>
