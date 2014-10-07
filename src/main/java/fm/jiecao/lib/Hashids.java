@@ -24,19 +24,19 @@ public class Hashids {
   private int minAlphabetLength = 16;
   private String guards;
 
-  public Hashids() throws Exception {
+  public Hashids() {
     this("");
   }
 
-  public Hashids(String salt) throws Exception {
+  public Hashids(String salt) {
     this(salt, 0);
   }
 
-  public Hashids(String salt, int minHashLength) throws Exception {
+  public Hashids(String salt, int minHashLength) {
     this(salt, minHashLength, DEFAULT_ALPHABET);
   }
 
-  public Hashids(String salt, int minHashLength, String alphabet) throws Exception {
+  public Hashids(String salt, int minHashLength, String alphabet) {
     this.salt = salt;
     if(minHashLength < 0)
       this.minHashLength = 0;
