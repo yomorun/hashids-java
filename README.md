@@ -1,4 +1,4 @@
-# Hashids.java ![aaa](http://img.shields.io/badge/hashids--java-0.3.3-ff69b4.svg)  [![Stories in Ready](https://badge.waffle.io/jiecao-fm/hashids-java.png?label=ready&title=Ready)](https://waffle.io/jiecao-fm/hashids-java) [![Build Status](https://drone.io/github.com/jiecao-fm/hashids-java/status.png)](https://drone.io/github.com/jiecao-fm/hashids-java/latest)
+# Hashids.java ![aaa](http://img.shields.io/badge/hashids--java-1.0.0-ff69b4.svg)  [![Stories in Ready](https://badge.waffle.io/jiecao-fm/hashids-java.png?label=ready&title=Ready)](https://waffle.io/jiecao-fm/hashids-java) [![Build Status](https://drone.io/github.com/jiecao-fm/hashids-java/status.png)](https://drone.io/github.com/jiecao-fm/hashids-java/latest)
 
 A small Java class to generate YouTube-like hashes from one or many numbers.
 
@@ -27,7 +27,7 @@ All (long) integers need to be greater than or equal to zero.
 #### Import the package
 
 ```java
-import fm.jiecao.lib;
+import org.hashids;
 ```
 
 #### Encrypting one number
@@ -187,7 +187,7 @@ Therefore, this algorithm tries to avoid generating most common English curse wo
 
 ## Contact
 
-Follow me [@fanweixiao](https://twitter.com/fanweixiao) or [@IvanAkimov](http://twitter.com/ivanakimov)
+Follow me [@fanweixiao](https://twitter.com/fanweixiao), [@IvanAkimov](http://twitter.com/ivanakimov)
 
 ## License
 
