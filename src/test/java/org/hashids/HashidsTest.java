@@ -9,10 +9,9 @@ public class HashidsTest {
 
 	@Test
 	public void test_large_nummber(){
-		String res;
 		long num_to_hash = 9007199254740992L;
 		Hashids	a = new Hashids("this is my salt");
-		res = a.encode(num_to_hash);
+		String res = a.encode(num_to_hash);
 		long[] b = a.decode(res);
 		Assert.assertEquals(num_to_hash, b[0]);
 	}
@@ -23,6 +22,13 @@ public class HashidsTest {
 		Hashids a = new Hashids("this is my salt");
     a.encode(num_to_hash);
 	}
+
+  @Test
+  public void test_wrong_decoding(){
+    Hashids a = new Hashids("this is my pepper");
+    long[] b = a.decode("NkK9");
+    Assert.assertEquals(b.length, 0);
+  }
 
 	@Test
 	public void test_one_number(){
