@@ -1,4 +1,4 @@
-package fm.jiecao.lib;
+package org.hashids;
 
 import java.util.Arrays;
 

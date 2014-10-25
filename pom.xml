@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>fm.jiecao.lib</groupId>
+  <groupId>org.hashids</groupId>
   <artifactId>hashids</artifactId>
   <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -184,24 +184,22 @@
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.15</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.sun.jmx</groupId>
-          <artifactId>jmxri</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jdmk</groupId>
-          <artifactId>jmxtools</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.jms</groupId>
-          <artifactId>jms</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
+
+  <contributors>
+    <contributor>
+      <name>kenumir</name>
+      <email>me@kenumir.plm</email>
+      <url>https://github.com/kenumir</url>
+    </contributor>
+    <contributor>
+      <name>Christophe R.</name>
+      <email>christophe@ribeiro.com</email>
+      <url>http://chrissom.github.io</url>
+    </contributor>
+    <contributor>
+      <name>Matthias Vill</name>
+      <url>https://github.com/TheConstructor</url>
+    </contributor>
+  </contributors>
 </project>

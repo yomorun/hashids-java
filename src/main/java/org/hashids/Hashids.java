@@ -1,4 +1,4 @@
-package fm.jiecao.lib;
+package org.hashids;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -209,7 +209,7 @@ public class Hashids {
 
       return result;
   }
-  
+
   private String _encode(long... numbers){
     int numberHashInt = 0;
     for(int i = 0; i < numbers.length; i++){
