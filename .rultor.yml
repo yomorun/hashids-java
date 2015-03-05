@@ -1,9 +1,0 @@
-decrypt:
-  settings.xml: "jiecao-fm/hashids-java#settings.xml.asc"
-  pubring.gpg: "jiecao-fm/hashids-java#pubring.gpg.asc"
-  secring.gpg: "jiecao-fm/hashids-java#secring.gpg.asc"
-release:
-  script:
-    - mvn versions:set "-DnewVersion=${tag}"
-    - git commit -am "${tag}"
-    - mvn clean deploy --settings /home/r/settings.xml
