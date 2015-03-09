@@ -1,9 +1,8 @@
-decrypt:
-  settings.xml: "jiecao-fm/hashids-java#settings.xml.asc"
-  pubring.gpg: "jiecao-fm/hashids-java#pubring.gpg.asc"
-  secring.gpg: "jiecao-fm/hashids-java#secring.gpg.asc"
+merge:
+  script: mvn clean install
+
 release:
   script:
-    - mvn versions:set "-DnewVersion=${tag}"
-    - git commit -am "${tag}"
-    - mvn clean deploy --settings /home/r/settings.xml
+    - "mvn versions:set \"-DnewVersion=${tag}\""
+    - "git commit -am \"${tag}\""
+    - "mvn clean deploy -Pqulice -Psonatype -Pjcabi"
