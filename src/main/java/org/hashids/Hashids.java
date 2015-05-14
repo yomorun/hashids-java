@@ -283,6 +283,7 @@ public class Hashids {
     int i = 0;
     String regexp = "[" + this.guards + "]";
     String hashBreakdown = hash.replaceAll(regexp, " ");
+    hashBreakdown = hashBreakdown.replaceAll("  ", " ");
     String[] hashArray = hashBreakdown.split(" ");
 
     if(hashArray.length == 3 || hashArray.length == 2){

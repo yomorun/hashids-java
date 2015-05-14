@@ -121,4 +121,15 @@ public class HashidsTest {
 		Assert.assertEquals(res2.length, 1);
 		Assert.assertEquals(res2[0], num_to_hash);
 	}
+
+    @Test
+    public void test_issue20() {
+        Hashids a = new Hashids("supersecret", 4);
+        Hashids b = new Hashids("differentsupersecret", 4);
+
+        long sampleId = 37l;
+        String token = a.encode(sampleId);
+        // no exception should be thrown
+        b.decode(token);
+    }
 }
