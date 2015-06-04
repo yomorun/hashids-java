@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * database IDs, use them as forgotten password hashes, invitation codes, store shard numbers
  * This is implementation of http://hashids.org v0.3.3 version.
  *
- * @author fanweixiao <fanweixiao@gmail.com>
+ * @author <a href="mailto:fanweixiao@gmail.com">fanweixiao</a>
  * @since 0.3.3
  */
 public class Hashids {
@@ -106,6 +106,8 @@ public class Hashids {
   }
 
 	/**
+     * @param numbers the numbers to encrypt
+     * @return the encrypt string
 	 * @deprecated
 	 * should use encode() since v1.0
 	 */
@@ -115,6 +117,8 @@ public class Hashids {
 		return encode(numbers);
   }
 	/**
+     * @param hash the encrypt string
+     * @return decryped numbers 
 	 * @deprecated
 	 * should use decode() since v1.0
 	 */
@@ -125,6 +129,8 @@ public class Hashids {
 	}
 
 	/**
+     * @param hexa the hexa to encrypt
+     * @return the encrypt string
 	 * @deprecated
 	 * should use encodeHex() since v1.0
 	 */
@@ -135,6 +141,8 @@ public class Hashids {
 	}
 
 	/**
+     * @param hash the encrypt string
+     * @return decryped numbers
 	 * @deprecated
 	 * should use decodeHex() since v1.0
 	 */
