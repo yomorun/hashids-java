@@ -1,8 +1,0 @@
-merge:
-  script: mvn clean install
-
-release:
-  script:
-    - "mvn versions:set \"-DnewVersion=${tag}\""
-    - "git commit -am \"${tag}\""
-    - "mvn clean deploy -Pqulice -Psonatype -Pjcabi"
