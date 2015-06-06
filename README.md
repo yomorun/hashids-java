@@ -6,19 +6,19 @@ Ported from javascript [hashids.js](https://github.com/ivanakimov/hashids.js) by
 
 ## What is it?
 
-hashids (Hash ID's) creates short, unique, decryptable hashes from unsigned (long) integers.
+hashids (Hash ID's) creates short, unique, decodable hashes from unsigned (long) integers.
 
 It was designed for websites to use in URL shortening, tracking stuff, or making pages private (or at least unguessable).
 
 This algorithm tries to satisfy the following requirements:
 
-1. Hashes must be unique and decryptable.
+1. Hashes must be unique and decodable.
 2. They should be able to contain more than one integer (so you can use them in complex or clustered systems).
 3. You should be able to specify minimum hash length.
 4. Hashes should not contain basic English curse words (since they are meant to appear in public places - like the URL).
 
 Instead of showing items as `1`, `2`, or `3`, you could show them as `U6dc`, `u87U`, and `HMou`.
-You don't have to store these hashes in the database, but can encrypt + decrypt on the fly.
+You don't have to store these hashes in the database, but can encode + decode on the fly.
 
 All (long) integers need to be greater than or equal to zero.
 
@@ -42,92 +42,92 @@ hashids is available in Maven Central. If you are using Maven, add the following
 import org.hashids;
 ```
 
-#### Encrypting one number
+#### Encoding one number
 
 You can pass a unique salt value so your hashes differ from everyone else's. I use "this is my salt" as an example.
 
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash = hashids.encrypt(12345L);
+String hash = hashids.encode(12345L);
 ```
 
 `hash` is now going to be:
 
 	NkK9
 
-#### Decrypting
+#### Decoding
 
-Notice during decryption, same salt value is used:
+Notice during decoding, same salt value is used:
 
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-long[] numbers = hashids.decrypt("NkK9");
+long[] numbers = hashids.decode("NkK9");
 ```
 
 `numbers` is now going to be:
 
 	[ 12345 ]
 
-#### Decrypting with different salt
+#### Decoding with different salt
 
-Decryption will not work if salt is changed:
+Decoding will not work if salt is changed:
 
 ```java
 
 Hashids hashids = new Hashids("this is my pepper");
-long[] numbers = hashids.decrypt("NkK9");
+long[] numbers = hashids.decode("NkK9");
 ```
 
 `numbers` is now going to be:
 
 	[]
 
-#### Encrypting several numbers
+#### Encoding several numbers
 
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash = hashids.encrypt(683L, 94108L, 123L, 5L);
+String hash = hashids.encode(683L, 94108L, 123L, 5L);
 ```
 
 `hash` is now going to be:
 
 	aBMswoO2UB3Sj
 
-#### Decrypting is done the same way
+#### Decoding is done the same way
 
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-long[] numbers = hashids.decrypt("aBMswoO2UB3Sj");
+long[] numbers = hashids.decode("aBMswoO2UB3Sj");
 ```
 
 `numbers` is now going to be:
 
 	[ 683, 94108, 123, 5 ]
 
-#### Encrypting and specifying minimum hash length
+#### Encoding and specifying minimum hash length
 
-Here we encrypt integer 1, and set the minimum hash length to **8** (by default it's **0** -- meaning hashes will be the shortest possible length).
+Here we encode integer 1, and set the minimum hash length to **8** (by default it's **0** -- meaning hashes will be the shortest possible length).
 
 ```java
 
 Hashids hashids = new Hashids("this is my salt", 8);
-String hash = hashids.encrypt(1L);
+String hash = hashids.encode(1L);
 ```
 
 `hash` is now going to be:
 
 	gB0NV05e
 
-#### Decrypting
+#### Decoding
 
 ```java
 
 Hashids hashids = new Hashids("this is my salt", 8);
-long[] numbers = hashids.decrypt("gB0NV05e");
+long[] numbers = hashids.decode("gB0NV05e");
 ```
 
 `numbers` is now going to be:
@@ -141,7 +141,7 @@ Here we set the alphabet to consist of only four letters: "0123456789abcdef"
 ```java
 
 Hashids hashids = new Hashids("this is my salt", 0, "0123456789abcdef");
-String hash = hashids.encrypt(1234567L);
+String hash = hashids.encode(1234567L);
 ```
 
 `hash` is now going to be:
@@ -158,7 +158,7 @@ Having said that, this algorithm does try to make these hashes unguessable and u
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash = hashids.encrypt(5L, 5L, 5L, 5L);
+String hash = hashids.encode(5L, 5L, 5L, 5L);
 ```
 
 You don't see any repeating patterns that might show there's 4 identical numbers in the hash:
@@ -170,7 +170,7 @@ Same with incremented numbers:
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash = hashids.encrypt(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
+String hash = hashids.encode(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
 ```
 
 `hash` will be :
@@ -182,11 +182,11 @@ String hash = hashids.encrypt(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
 ```java
 
 Hashids hashids = new Hashids("this is my salt");
-String hash1 = hashids.encrypt(1L); /* NV */
-String hash2 = hashids.encrypt(2L); /* 6m */
-String hash3 = hashids.encrypt(3L); /* yD */
-String hash4 = hashids.encrypt(4L); /* 2l */
-String hash5 = hashids.encrypt(5L); /* rD */
+String hash1 = hashids.encode(1L); /* NV */
+String hash2 = hashids.encode(2L); /* 6m */
+String hash3 = hashids.encode(3L); /* yD */
+String hash4 = hashids.encode(4L); /* 2l */
+String hash5 = hashids.encode(5L); /* rD */
 ```
 
 ## Bad hashes
