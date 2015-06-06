@@ -24,6 +24,18 @@ All (long) integers need to be greater than or equal to zero.
 
 ## Usage
 
+#### Add the dependency
+
+hashids is available in Maven Central. If you are using Maven, add the following dependency to your pom.xml's dependencies:
+
+```
+<dependency>
+  <groupId>org.hashids</groupId>
+  <artifactId>hashids</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
 #### Import the package
 
 ```java
