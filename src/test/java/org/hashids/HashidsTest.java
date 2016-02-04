@@ -55,6 +55,18 @@ public class HashidsTest {
     Assert.assertTrue(Arrays.equals(res2, num_to_hash));
 	}
 
+	@Test
+	public void test_specifying_custom_hash_alphabet(){
+        String expected = "b332db5", res;
+        long num_to_hash = 1234567L;
+        long[] res2;
+        Hashids a = new Hashids("this is my salt", 0, "0123456789abcdef");
+        res = a.encode(num_to_hash);
+        Assert.assertEquals(expected, res);
+        res2 = a.decode(expected);
+        Assert.assertEquals(res2[0], num_to_hash);
+	}
+
   @Test
   public void test_specifying_custom_hash_length(){
     String expected = "gB0NV05e", res;
@@ -121,4 +133,16 @@ public class HashidsTest {
 		Assert.assertEquals(res2.length, 1);
 		Assert.assertEquals(res2[0], num_to_hash);
 	}
+
+    @Test
+    public void test_issue23(){
+        String expected = "9Q7MJ3LVGW", res;
+        long num_to_hash = 1145L;
+        long[] res2;
+        Hashids a = new Hashids("MyCamelCaseSalt", 10, "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789");
+        res = a.encode(num_to_hash);
+        Assert.assertEquals(expected, res);
+        res2 = a.decode(expected);
+        Assert.assertEquals(res2[0], num_to_hash);
+    }
 }
