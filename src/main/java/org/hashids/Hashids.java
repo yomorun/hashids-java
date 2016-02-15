@@ -75,7 +75,7 @@ public class Hashids {
     this.seps = this.consistentShuffle(this.seps, this.salt);
 
     double sepDiv = 3.5;
-    if((this.seps.equals("")) || ((this.alphabet.length() / this.seps.length()) > sepDiv)){
+    if((this.seps.equals("")) || (((float)this.alphabet.length() / this.seps.length()) > sepDiv)){
       int seps_len = (int)Math.ceil(this.alphabet.length() / sepDiv);
 
       if(seps_len == 1){
