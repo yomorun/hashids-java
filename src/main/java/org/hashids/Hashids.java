@@ -43,8 +43,8 @@ public class Hashids {
 
     String uniqueAlphabet = "";
     for(int i = 0; i < this.alphabet.length(); i++){
-      if(!uniqueAlphabet.contains("" + this.alphabet.charAt(i))){
-        uniqueAlphabet += "" + this.alphabet.charAt(i);
+      if(!uniqueAlphabet.contains(Character.toString(this.alphabet.charAt(i)))){
+        uniqueAlphabet += Character.toString(this.alphabet.charAt(i));
       }
     }
 
@@ -72,7 +72,7 @@ public class Hashids {
 
     this.alphabet = this.alphabet.replaceAll("\\s+", "");
     this.seps = this.seps.replaceAll("\\s+", "");
-    this.seps = this.consistentShuffle(this.seps, this.salt);
+    this.seps = Hashids.consistentShuffle(this.seps, this.salt);
 
     double sepDiv = 3.5;
     if((this.seps.equals("")) || (((float)this.alphabet.length() / this.seps.length()) > sepDiv)){
@@ -91,7 +91,7 @@ public class Hashids {
       }
     }
 
-    this.alphabet = this.consistentShuffle(this.alphabet, this.salt);
+    this.alphabet = Hashids.consistentShuffle(this.alphabet, this.salt);
     // use double to round up
     int guardDiv = 12;
     int guardCount = (int)Math.ceil((double)this.alphabet.length() / guardDiv);
@@ -238,15 +238,15 @@ public class Hashids {
     //char lottery = ret;
     long num;
     int sepsIndex, guardIndex;
-    String buffer, ret_str = ret + "";
+    String buffer, ret_str = Character.toString(ret);
     char guard;
 
     for(int i = 0; i < numbers.length; i++){
       num = numbers[i];
       buffer = ret + this.salt + alphabet;
 
-      alphabet = this.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
-      String last = this.hash(num, alphabet);
+      alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
+      String last = Hashids.hash(num, alphabet);
 
       ret_str += last;
 
@@ -273,7 +273,7 @@ public class Hashids {
 
     int halfLen = alphabet.length() / 2;
     while(ret_str.length() < this.minHashLength){
-      alphabet = this.consistentShuffle(alphabet, alphabet);
+      alphabet = Hashids.consistentShuffle(alphabet, alphabet);
       ret_str = alphabet.substring(halfLen) + ret_str + alphabet.substring(0, halfLen);
       int excess = ret_str.length() - this.minHashLength;
       if(excess > 0){
@@ -309,8 +309,8 @@ public class Hashids {
 	  for (String aHashArray : hashArray) {
 		  subHash = aHashArray;
 		  buffer = lottery + this.salt + alphabet;
-		  alphabet = this.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
-		  ret.add(this.unhash(subHash, alphabet));
+		  alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
+		  ret.add(Hashids.unhash(subHash, alphabet));
 	  }
 
     //transform from List<Long> to long[]
@@ -327,7 +327,7 @@ public class Hashids {
   }
 
   /* Private methods */
-  private String consistentShuffle(String alphabet, String salt){
+  private static String consistentShuffle(String alphabet, String salt){
     if(salt.length() <= 0)
       return alphabet;
 
@@ -348,7 +348,7 @@ public class Hashids {
     return alphabet;
   }
 
-  private String hash(long input, String alphabet){
+  private static String hash(long input, String alphabet){
     String hash = "";
     int alphabetLen = alphabet.length();
     char[] arr = alphabet.toCharArray();
@@ -361,7 +361,7 @@ public class Hashids {
     return hash;
   }
 
-  private Long unhash(String input, String alphabet){
+  private static Long unhash(String input, String alphabet){
     long number = 0, pos;
     char[] input_arr = input.toCharArray();
 
