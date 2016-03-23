@@ -41,14 +41,14 @@ public class Hashids {
       this.minHashLength = minHashLength;
     this.alphabet = alphabet;
 
-    String uniqueAlphabet = "";
+    StringBuilder uniqueAlphabet = new StringBuilder();
     for(int i = 0; i < this.alphabet.length(); i++){
-      if(!uniqueAlphabet.contains(Character.toString(this.alphabet.charAt(i)))){
-        uniqueAlphabet += Character.toString(this.alphabet.charAt(i));
+      if(uniqueAlphabet.indexOf(Character.toString(this.alphabet.charAt(i)))==-1){
+        uniqueAlphabet.append(this.alphabet.charAt(i));
       }
     }
 
-    this.alphabet = uniqueAlphabet;
+    this.alphabet = uniqueAlphabet.toString();
 
     int minAlphabetLength = 16;
     if(this.alphabet.length() < minAlphabetLength){
@@ -218,14 +218,14 @@ public class Hashids {
    * @return decryped numbers
    */
   public String decodeHex(String hash){
-      String result = "";
+	  StringBuilder result = new StringBuilder();
       long[] numbers = this.decode(hash);
 
 	  for (long number : numbers) {
-		  result += Long.toHexString(number).substring(1);
+		  result.append(Long.toHexString(number).substring(1));
 	  }
 
-      return result;
+      return result.toString();
   }
 
   private String _encode(long... numbers){
@@ -238,7 +238,8 @@ public class Hashids {
     //char lottery = ret;
     long num;
     int sepsIndex, guardIndex;
-    String buffer, ret_str = Character.toString(ret);
+    String buffer;
+    StringBuilder ret_strB = new StringBuilder(Character.toString(ret));
     char guard;
 
     for(int i = 0; i < numbers.length; i++){
@@ -248,15 +249,16 @@ public class Hashids {
       alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
       String last = Hashids.hash(num, alphabet);
 
-      ret_str += last;
+      ret_strB.append(last);
 
       if(i + 1 < numbers.length){
         num %= ((int)last.toCharArray()[0] + i);
         sepsIndex = (int)(num % this.seps.length());
-        ret_str += this.seps.toCharArray()[sepsIndex];
+        ret_strB.append(this.seps.toCharArray()[sepsIndex]);
       }
     }
 
+    String ret_str = ret_strB.toString();
     if(ret_str.length() < this.minHashLength){
       guardIndex = (numberHashInt + (int)(ret_str.toCharArray()[0])) % this.guards.length();
       guard = this.guards.toCharArray()[guardIndex];
