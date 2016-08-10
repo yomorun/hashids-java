@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Hashids designed for Generating short hashes from numbers (like YouTube and Bitly), obfuscate
  * database IDs, use them as forgotten password hashes, invitation codes, store shard numbers
- * This is implementation of http://hashids.org v0.3.3 version.
+ * This is implementation of http://hashids.org v1.0.0 version.
  *
  * @author <a href="mailto:fanweixiao@gmail.com">fanweixiao</a>
  * @since 0.3.3
@@ -105,52 +105,48 @@ public class Hashids {
     }
   }
 
-	/**
-     * @param numbers the numbers to encrypt
-     * @return the encrypt string
-	 * @deprecated
-	 * should use encode() since v1.0
-	 */
-	@Deprecated
-  @SuppressWarnings("unused")
+  /**
+   * @param numbers the numbers to encrypt
+   * @return the encrypt string
+   * @deprecated
+   * should use encode() since v1.0
+   */
+  @Deprecated
   public String encrypt(long... numbers){
-		return encode(numbers);
+    return encode(numbers);
   }
-	/**
-     * @param hash the encrypt string
-     * @return decryped numbers 
-	 * @deprecated
-	 * should use decode() since v1.0
-	 */
-	@Deprecated
-  @SuppressWarnings("unused")
-	public long[] decrypt(String hash){
-		return decode(hash);
-	}
+  /**
+   * @param hash the encrypt string
+   * @return decryped numbers 
+   * @deprecated
+   * should use decode() since v1.0
+   */
+  @Deprecated
+  public long[] decrypt(String hash){
+    return decode(hash);
+  }
 
-	/**
-     * @param hexa the hexa to encrypt
-     * @return the encrypt string
-	 * @deprecated
-	 * should use encodeHex() since v1.0
-	 */
-	@Deprecated
-  @SuppressWarnings("unused")
-	public String encryptHex(String hexa){
-		return encodeHex(hexa);
-	}
+  /**
+   * @param hexa the hexa to encrypt
+   * @return the encrypt string
+   * @deprecated
+   * should use encodeHex() since v1.0
+   */
+  @Deprecated
+  public String encryptHex(String hexa){
+    return encodeHex(hexa);
+  }
 
-	/**
-     * @param hash the encrypt string
-     * @return decryped numbers
-	 * @deprecated
-	 * should use decodeHex() since v1.0
-	 */
-	@Deprecated
-  @SuppressWarnings("unused")
-	public String decryptHex(String hash){
-		return decodeHex(hash);
-	}
+  /**
+   * @param hash the encrypt string
+   * @return decryped numbers
+   * @deprecated
+   * should use decodeHex() since v1.0
+   */
+  @Deprecated
+  public String decryptHex(String hash){
+    return decodeHex(hash);
+  }
 
   /**
    * Encrypt numbers to string
@@ -218,12 +214,12 @@ public class Hashids {
    * @return decryped numbers
    */
   public String decodeHex(String hash){
-	  StringBuilder result = new StringBuilder();
+    StringBuilder result = new StringBuilder();
       long[] numbers = this.decode(hash);
 
-	  for (long number : numbers) {
-		  result.append(Long.toHexString(number).substring(1));
-	  }
+    for (long number : numbers) {
+      result.append(Long.toHexString(number).substring(1));
+    }
 
       return result.toString();
   }
@@ -308,12 +304,12 @@ public class Hashids {
     hashArray = hashBreakdown.split(" ");
 
     String subHash, buffer;
-	  for (String aHashArray : hashArray) {
-		  subHash = aHashArray;
-		  buffer = lottery + this.salt + alphabet;
-		  alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
-		  ret.add(Hashids.unhash(subHash, alphabet));
-	  }
+    for (String aHashArray : hashArray) {
+      subHash = aHashArray;
+      buffer = lottery + this.salt + alphabet;
+      alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
+      ret.add(Hashids.unhash(subHash, alphabet));
+    }
 
     //transform from List<Long> to long[]
     long[] arr = new long[ret.size()];
@@ -375,7 +371,6 @@ public class Hashids {
     return number;
   }
 
-  @SuppressWarnings("unused")
   public static int checkedCast(long value) {
     int result = (int) value;
     if (result != value) {
@@ -385,12 +380,11 @@ public class Hashids {
     return result;
   }
 
-	/**
-	 * Get version
-	 *
-	 * @return version
-	 */
-  @SuppressWarnings("unused")
+  /**
+   * Get version
+   *
+   * @return version
+   */
   public String getVersion() {
     return "1.0.0";
   }
