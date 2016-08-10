@@ -296,19 +296,20 @@ public class Hashids {
     }
 
     hashBreakdown = hashArray[i];
-
-    char lottery = hashBreakdown.toCharArray()[0];
-
-    hashBreakdown = hashBreakdown.substring(1);
-    hashBreakdown = hashBreakdown.replaceAll("[" + this.seps + "]", " ");
-    hashArray = hashBreakdown.split(" ");
-
-    String subHash, buffer;
-    for (String aHashArray : hashArray) {
-      subHash = aHashArray;
-      buffer = lottery + this.salt + alphabet;
-      alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
-      ret.add(Hashids.unhash(subHash, alphabet));
+    if(!hashBreakdown.isEmpty()){
+      char lottery = hashBreakdown.toCharArray()[0];
+  
+      hashBreakdown = hashBreakdown.substring(1);
+      hashBreakdown = hashBreakdown.replaceAll("[" + this.seps + "]", " ");
+      hashArray = hashBreakdown.split(" ");
+  
+      String subHash, buffer;
+      for (String aHashArray : hashArray) {
+        subHash = aHashArray;
+        buffer = lottery + this.salt + alphabet;
+        alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
+        ret.add(Hashids.unhash(subHash, alphabet));
+      }
     }
 
     //transform from List<Long> to long[]
