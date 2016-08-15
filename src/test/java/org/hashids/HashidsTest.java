@@ -3,35 +3,35 @@ package org.hashids;
 import java.util.Arrays;
 
 import org.junit.Test;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class HashidsTest {
 
   @Test
-  public void test_large_nummber(){
+  public void test_large_nummber() {
     long num_to_hash = 9007199254740992L;
-    Hashids  a = new Hashids("this is my salt");
+    Hashids a = new Hashids("this is my salt");
     String res = a.encode(num_to_hash);
     long[] b = a.decode(res);
     Assert.assertEquals(num_to_hash, b[0]);
   }
 
-  @Test(expected=IllegalArgumentException.class)
-  public void test_large_nummber_not_supported() throws Exception{
+  @Test(expected = IllegalArgumentException.class)
+  public void test_large_nummber_not_supported() throws Exception {
     long num_to_hash = 9007199254740993L;
     Hashids a = new Hashids("this is my salt");
     a.encode(num_to_hash);
   }
 
   @Test
-  public void test_wrong_decoding(){
+  public void test_wrong_decoding() {
     Hashids a = new Hashids("this is my pepper");
     long[] b = a.decode("NkK9");
     Assert.assertEquals(b.length, 0);
   }
 
   @Test
-  public void test_one_number(){
+  public void test_one_number() {
     String expected = "NkK9", res;
     long num_to_hash = 12345L;
     long[] res2;
@@ -44,9 +44,9 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_serveral_numbers(){
+  public void test_serveral_numbers() {
     String expected = "aBMswoO2UB3Sj", res;
-    long[] num_to_hash = {683L, 94108L, 123L, 5L}, res2;
+    long[] num_to_hash = { 683L, 94108L, 123L, 5L }, res2;
     Hashids a = new Hashids("this is my salt");
     res = a.encode(num_to_hash);
     Assert.assertEquals(res, expected);
@@ -56,7 +56,7 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_specifying_custom_hash_alphabet(){
+  public void test_specifying_custom_hash_alphabet() {
     String expected = "b332db5", res;
     long num_to_hash = 1234567L;
     long[] res2;
@@ -68,7 +68,7 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_specifying_custom_hash_length(){
+  public void test_specifying_custom_hash_length() {
     String expected = "gB0NV05e", res;
     long num_to_hash = 1L;
     long[] res2;
@@ -81,9 +81,9 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_randomness(){
+  public void test_randomness() {
     String expected = "1Wc8cwcE", res;
-    long[] num_to_hash = {5L, 5L, 5L, 5L}, res2;
+    long[] num_to_hash = { 5L, 5L, 5L, 5L }, res2;
     Hashids a = new Hashids("this is my salt");
     res = a.encode(num_to_hash);
     Assert.assertEquals(res, expected);
@@ -93,9 +93,9 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_randomness_for_incrementing_numbers(){
+  public void test_randomness_for_incrementing_numbers() {
     String expected = "kRHnurhptKcjIDTWC3sx", res;
-    long[] num_to_hash = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L}, res2;
+    long[] num_to_hash = { 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L }, res2;
     Hashids a = new Hashids("this is my salt");
     res = a.encode(num_to_hash);
     Assert.assertEquals(res, expected);
@@ -105,7 +105,7 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_randomness_for_incrementing(){
+  public void test_randomness_for_incrementing() {
     Hashids a;
     a = new Hashids("this is my salt");
     Assert.assertEquals(a.encode(1L), "NV");
@@ -116,13 +116,13 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_for_vlues_greater_int_maxval(){
+  public void test_for_vlues_greater_int_maxval() {
     Hashids a = new Hashids("this is my salt");
     Assert.assertEquals(a.encode(9876543210123L), "Y8r7W1kNN");
   }
 
   @Test
-  public void test_issue10(){
+  public void test_issue10() {
     String expected = "3kK3nNOe", res;
     long num_to_hash = 75527867232l;
     long[] res2;
@@ -135,7 +135,7 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_issue23(){
+  public void test_issue23() {
     String expected = "9Q7MJ3LVGW", res;
     long num_to_hash = 1145L;
     long[] res2;
