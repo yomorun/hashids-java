@@ -5,8 +5,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Hashids designed for Generating short hashes from numbers (like YouTube and Bitly), obfuscate database IDs, use them as forgotten
- * password hashes, invitation codes, store shard numbers This is implementation of http://hashids.org v1.0.0 version.
+ * Hashids designed for Generating short hashes from numbers (like YouTube and Bitly), obfuscate
+ * database IDs, use them as forgotten password hashes, invitation codes, store shard numbers.
+ * This is implementation of http://hashids.org v1.0.0 version.
  * 
  * This implementation is immutable, thread-safe, no lock is necessary.
  *
