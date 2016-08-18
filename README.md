@@ -197,9 +197,14 @@ Therefore, this algorithm tries to avoid generating most common English curse wo
 
 	c, C, s, S, f, F, h, H, u, U, i, I, t, T
 
+## Contributors
+
++ [C.C.](https://github.com/fanweixiao)
++ [Tercio Gaudencio Filho](https://github.com/0x3333)
+
 ## Contact
 
-Follow me [@fanweixiao](https://twitter.com/fanweixiao), [@IvanAkimov](http://twitter.com/ivanakimov)
+Follow me [C.C.(@fanweixiao)](https://twitter.com/fanweixiao), [@IvanAkimov](http://twitter.com/ivanakimov)
 
 ## License
 
