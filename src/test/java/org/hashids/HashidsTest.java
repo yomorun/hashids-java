@@ -145,4 +145,13 @@ public class HashidsTest {
     res2 = a.decode(expected);
     Assert.assertEquals(res2[0], num_to_hash);
   }
+  
+  @Test
+  public void test_issue30() {
+	  String expected = "", res;
+	  long num_to_hash = -1L;
+	  Hashids a = new Hashids("this is my salt");
+	  res = a.encode(num_to_hash);
+	  Assert.assertEquals(expected, res);
+  }
 }

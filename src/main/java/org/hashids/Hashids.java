@@ -166,14 +166,17 @@ public class Hashids {
    * @return the encrypt string
    */
   public String encode(long... numbers) {
-    for (long number : numbers) {
+	if (numbers.length == 0) {
+	  return "";
+	}
+
+	for (long number : numbers) {
+      if (number < 0) {
+        return "";
+      }
       if (number > MAX_NUMBER) {
         throw new IllegalArgumentException("number can not be greater than " + MAX_NUMBER + "L");
       }
-    }
-
-    if (numbers.length == 0) {
-      return "";
     }
     return this._encode(numbers);
   }
