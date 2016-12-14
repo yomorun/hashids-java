@@ -40,6 +40,12 @@
       <url>https://github.com/fanweixiao</url>
       <id>fanweixiao</id>
     </developer>
+    <developer>
+      <email>terciofilho@gmail.com</email>
+      <name>Tercio Gaudencio Filho</name>
+      <url>https://github.com/0x3333</url>
+      <id>0x3333</id>
+    </developer>
   </developers>
 
   <properties>
