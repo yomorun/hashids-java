@@ -177,6 +177,9 @@ public class Hashids {
       if (number > MAX_NUMBER) {
         throw new IllegalArgumentException("number can not be greater than " + MAX_NUMBER + "L");
       }
+      if (number < 0) {
+    	  return "";
+      }
     }
     return this._encode(numbers);
   }
