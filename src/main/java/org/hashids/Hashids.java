@@ -247,15 +247,15 @@ public class Hashids {
   /* Private methods */
 
   private String _encode(long... numbers) {
-    int numberHashInt = 0;
+    long numberHashInt = 0;
     for (int i = 0; i < numbers.length; i++) {
       numberHashInt += (numbers[i] % (i + 100));
     }
     String alphabet = this.alphabet;
-    char ret = alphabet.charAt(numberHashInt % alphabet.length());
+    char ret = alphabet.charAt((int) (numberHashInt % alphabet.length()));
     // char lottery = ret;
     long num;
-    int sepsIndex, guardIndex;
+    long sepsIndex, guardIndex;
     String buffer;
     StringBuilder ret_strB = new StringBuilder(minHashLength);
     ret_strB.append(ret);
@@ -273,20 +273,20 @@ public class Hashids {
       if (i + 1 < numbers.length) {
         num %= ((int) last.charAt(0) + i);
         sepsIndex = (int) (num % this.seps.length());
-        ret_strB.append(this.seps.charAt(sepsIndex));
+        ret_strB.append(this.seps.charAt((int) sepsIndex));
       }
     }
 
     String ret_str = ret_strB.toString();
     if (ret_str.length() < this.minHashLength) {
       guardIndex = (numberHashInt + (int) (ret_str.charAt(0))) % this.guards.length();
-      guard = this.guards.charAt(guardIndex);
+      guard = this.guards.charAt((int) guardIndex);
 
       ret_str = guard + ret_str;
 
       if (ret_str.length() < this.minHashLength) {
         guardIndex = (numberHashInt + (int) (ret_str.charAt(2))) % this.guards.length();
-        guard = this.guards.charAt(guardIndex);
+        guard = this.guards.charAt((int) guardIndex);
 
         ret_str += guard;
       }
