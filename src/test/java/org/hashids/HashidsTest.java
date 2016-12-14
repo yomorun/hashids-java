@@ -153,6 +153,7 @@ public class HashidsTest {
 	  Hashids a = new Hashids("this is my salt");
 	  res = a.encode(num_to_hash);
 	  Assert.assertEquals(expected, res);
+  }
   
   @Test
   public void test_issue32() throws Exception {
