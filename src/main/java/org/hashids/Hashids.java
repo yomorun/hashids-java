@@ -393,6 +393,8 @@ public class Hashids {
 
   /**
    * Get Hashid algorithm version.
+   * 
+   * @return Hashids algorithm version implemented.
    */
   public String getVersion() {
     return "1.0.0";
