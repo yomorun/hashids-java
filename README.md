@@ -136,7 +136,7 @@ long[] numbers = hashids.decode("gB0NV05e");
 
 #### Specifying custom hash alphabet
 
-Here we set the alphabet to consist of only four letters: "0123456789abcdef"
+Here we set the alphabet to consist of only six letters: "0123456789abcdef"
 
 ```java
 
