@@ -353,19 +353,18 @@ public class Hashids {
       return alphabet;
 
     int asc_val, j;
-    char tmp;
-    for (int i = alphabet.length() - 1, v = 0, p = 0; i > 0; i--, v++) {
+    char[] tmpArr = alphabet.toCharArray();
+    for (int i = tmpArr.length - 1, v = 0, p = 0; i > 0; i--, v++) {
       v %= salt.length();
       asc_val = (int) salt.charAt(v);
       p += asc_val;
       j = (asc_val + v + p) % i;
-
-      tmp = alphabet.charAt(j);
-      alphabet = alphabet.substring(0, j) + alphabet.charAt(i) + alphabet.substring(j + 1);
-      alphabet = alphabet.substring(0, i) + tmp + alphabet.substring(i + 1);
+      char tmp = tmpArr[j];
+      tmpArr[j] = tmpArr[i];
+      tmpArr[i] = tmp;
     }
 
-    return alphabet;
+    return new String(tmpArr);
   }
 
   private static String hash(long input, String alphabet) {
