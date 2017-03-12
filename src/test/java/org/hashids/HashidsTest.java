@@ -8,7 +8,7 @@ import org.junit.Assert;
 public class HashidsTest {
 
   @Test
-  public void test_large_nummber() {
+  public void test_large_number() {
     long num_to_hash = 9007199254740992L;
     Hashids a = new Hashids("this is my salt");
     String res = a.encode(num_to_hash);
@@ -17,7 +17,7 @@ public class HashidsTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void test_large_nummber_not_supported() throws Exception {
+  public void test_large_number_not_supported() throws Exception {
     long num_to_hash = 9007199254740993L;
     Hashids a = new Hashids("this is my salt");
     a.encode(num_to_hash);
