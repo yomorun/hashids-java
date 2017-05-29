@@ -1,4 +1,4 @@
-# Hashids.java [![aaa](http://img.shields.io/badge/hashids--java-1.0.0-ff69b4.svg)](https://jitpack.io/#jiecao-fm/hashids-java)  [![Stories in Ready](https://badge.waffle.io/jiecao-fm/hashids-java.png?label=ready&title=Ready)](https://waffle.io/jiecao-fm/hashids-java) [![Build Status](https://drone.io/github.com/jiecao-fm/hashids-java/status.png)](https://drone.io/github.com/jiecao-fm/hashids-java/latest)
+# Hashids.java [![Version](http://img.shields.io/badge/hashids--java-1.0.2-ff69b4.svg)](https://jitpack.io/#jiecao-fm/hashids-java)  [![Stories in Ready](https://badge.waffle.io/jiecao-fm/hashids-java.png?label=ready&title=Ready)](https://waffle.io/jiecao-fm/hashids-java) [![Build Status](https://travis-ci.org/jiecao-fm/hashids-java.svg?branch=master)](https://travis-ci.org/jiecao-fm/hashids-java)
 
 A small Java class to generate YouTube-like hashes from one or many numbers.
 
@@ -32,14 +32,14 @@ hashids is available in Maven Central. If you are using Maven, add the following
 <dependency>
   <groupId>org.hashids</groupId>
   <artifactId>hashids</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
 Alternatively, if you use gradle or are on android, add the following to your app's `build.gradle` file under dependencies:
 
 ```
-compile 'org.hashids:hashids:1.0.1'
+compile 'org.hashids:hashids:1.0.2'
 ```
 
 #### Import the package
