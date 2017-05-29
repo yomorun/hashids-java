@@ -271,8 +271,12 @@ public class Hashids {
       ret_strB.append(last);
 
       if (i + 1 < numbers.length) {
-        num %= ((int) last.charAt(0) + i);
-        sepsIndex = (int) (num % this.seps.length());
+        if(last.length() > 0) {
+          num %= ((int) last.charAt(0) + i);
+          sepsIndex = (int) (num % this.seps.length());
+        } else {
+          sepsIndex = 0;
+        }
         ret_strB.append(this.seps.charAt((int) sepsIndex));
       }
     }
@@ -318,20 +322,22 @@ public class Hashids {
       i = 1;
     }
 
-    hashBreakdown = hashArray[i];
-    if (!hashBreakdown.isEmpty()) {
-      char lottery = hashBreakdown.charAt(0);
+    if (hashArray.length > 0) {
+      hashBreakdown = hashArray[i];
+      if (!hashBreakdown.isEmpty()) {
+        char lottery = hashBreakdown.charAt(0);
 
-      hashBreakdown = hashBreakdown.substring(1);
-      hashBreakdown = hashBreakdown.replaceAll("[" + this.seps + "]", " ");
-      hashArray = hashBreakdown.split(" ");
+        hashBreakdown = hashBreakdown.substring(1);
+        hashBreakdown = hashBreakdown.replaceAll("[" + this.seps + "]", " ");
+        hashArray = hashBreakdown.split(" ");
 
-      String subHash, buffer;
-      for (String aHashArray : hashArray) {
-        subHash = aHashArray;
-        buffer = lottery + this.salt + alphabet;
-        alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
-        ret.add(Hashids.unhash(subHash, alphabet));
+        String subHash, buffer;
+        for (String aHashArray : hashArray) {
+          subHash = aHashArray;
+          buffer = lottery + this.salt + alphabet;
+          alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
+          ret.add(Hashids.unhash(subHash, alphabet));
+        }
       }
     }
 
@@ -372,7 +378,10 @@ public class Hashids {
     int alphabetLen = alphabet.length();
 
     do {
-      hash = alphabet.charAt((int) (input % alphabetLen)) + hash;
+      int index = (int) (input % alphabetLen);
+      if (index >= 0 && index < alphabet.length()) {
+        hash = alphabet.charAt(index) + hash;
+      }
       input /= alphabetLen;
     } while (input > 0);
 
