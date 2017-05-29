@@ -1,4 +1,4 @@
-# Hashids.java [![Version](http://img.shields.io/badge/hashids--java-1.0.2-ff69b4.svg)](https://jitpack.io/#jiecao-fm/hashids-java)  [![Stories in Ready](https://badge.waffle.io/jiecao-fm/hashids-java.png?label=ready&title=Ready)](https://waffle.io/jiecao-fm/hashids-java) [![Build Status](https://travis-ci.org/jiecao-fm/hashids-java.svg?branch=master)](https://travis-ci.org/jiecao-fm/hashids-java)
+# Hashids.java [![Version](http://img.shields.io/badge/hashids--java-1.0.2-ff69b4.svg)](https://jitpack.io/#jiecao-fm/hashids-java)  [![Stories in Ready](https://badge.waffle.io/jiecao-fm/hashids-java.png?label=ready&title=Ready)](https://waffle.io/jiecao-fm/hashids-java) [![CircleCI](https://circleci.com/gh/jiecao-fm/hashids-java/tree/master.svg?style=shield)](https://circleci.com/gh/jiecao-fm/hashids-java/tree/master)
 
 A small Java class to generate YouTube-like hashes from one or many numbers.
 
