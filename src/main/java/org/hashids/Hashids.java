@@ -389,11 +389,11 @@ public class Hashids {
   }
 
   private static Long unhash(String input, String alphabet) {
-    long number = 0, pos;
+    long number = 0;
 
-    for (int i = 0; i < input.length(); i++) {
-      pos = alphabet.indexOf(input.charAt(i));
-      number += pos * Math.pow(alphabet.length(), input.length() - i - 1);
+    for (char item: input.toCharArray()) {
+      long position = alphabet.indexOf(item);
+      number = number * alphabet.length() + position;
     }
 
     return number;
