@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.hashids</groupId>
   <artifactId>hashids</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.3-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>hashids</name>
   <description>Implementing Hashids algorithm v1.0.0 version(http://hashids.org)</description>
