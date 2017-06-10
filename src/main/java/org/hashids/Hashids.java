@@ -199,6 +199,13 @@ public class Hashids {
     if (hash.isEmpty()) {
       return new long[0];
     }
+    
+    String validChars = this.alphabet + this.guards + this.seps;
+    for (int i = 0; i < hash.length(); i++) {
+      if(validChars.indexOf(hash.charAt(i)) == -1) {
+        return new long[0];
+      }
+    }
 
     return this._decode(hash, this.alphabet);
   }
@@ -228,7 +235,7 @@ public class Hashids {
       result[i] = matched.get(i);
     }
 
-    return this._encode(result);
+    return this.encode(result);
   }
 
   /**
@@ -361,7 +368,7 @@ public class Hashids {
       arr[k] = ret.get(k);
     }
 
-    if (!this._encode(arr).equals(hash)) {
+    if (!this.encode(arr).equals(hash)) {
       arr = new long[0];
     }
 
