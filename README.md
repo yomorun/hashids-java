@@ -203,14 +203,18 @@ Therefore, this algorithm tries to avoid generating most common English curse wo
 
 	c, C, s, S, f, F, h, H, u, U, i, I, t, T
 
+## Limitations
+
+The original and reference implementation is the [JS](https://github.com/ivanakimov/hashids.js) ([Hashids Website](http://hashids.org)) version. JS `number` limitation is `(2^53 - 1)`. Our java implementation uses `Long`, but is limited to the same limits JS is, for the sake of compatibility. If a bigger number is provided, an `IllegalArgumentException` will be thrown.
+
 ## Contributors
 
 + [C.C.](https://github.com/fanweixiao)
-+ [Tercio Gaudencio Filho](https://github.com/0x3333)
++ [0x3333](https://github.com/0x3333)
 
 ## Contact
 
-Follow me [C.C.(@fanweixiao)](https://twitter.com/fanweixiao), [@IvanAkimov](http://twitter.com/ivanakimov)
+Follow me [C.C.(@fanweixiao)](https://twitter.com/fanweixiao), [@IvanAkimov](http://twitter.com/ivanakimov), [@0x3333](https://twitter.com/0x3333).
 
 ## License
 
