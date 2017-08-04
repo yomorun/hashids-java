@@ -122,50 +122,6 @@ public class Hashids {
   }
 
   /**
-   * @param numbers
-   *          the numbers to encrypt
-   * @return the encrypt string
-   * @deprecated should use encode() since v1.0
-   */
-  @Deprecated
-  public String encrypt(long... numbers) {
-    return this.encode(numbers);
-  }
-
-  /**
-   * @param hash
-   *          the encrypt string
-   * @return decryped numbers
-   * @deprecated should use decode() since v1.0
-   */
-  @Deprecated
-  public long[] decrypt(String hash) {
-    return this.decode(hash);
-  }
-
-  /**
-   * @param hexa
-   *          the hexa to encrypt
-   * @return the encrypt string
-   * @deprecated should use encodeHex() since v1.0
-   */
-  @Deprecated
-  public String encryptHex(String hexa) {
-    return this.encodeHex(hexa);
-  }
-
-  /**
-   * @param hash
-   *          the encrypt string
-   * @return decryped numbers
-   * @deprecated should use decodeHex() since v1.0
-   */
-  @Deprecated
-  public String decryptHex(String hash) {
-    return this.decodeHex(hash);
-  }
-
-  /**
    * Encrypt numbers to string
    *
    * @param numbers
