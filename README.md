@@ -32,14 +32,14 @@ hashids is available in Maven Central. If you are using Maven, add the following
 <dependency>
   <groupId>org.hashids</groupId>
   <artifactId>hashids</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
 Alternatively, if you use gradle or are on android, add the following to your app's `build.gradle` file under dependencies:
 
 ```
-compile 'org.hashids:hashids:1.0.2'
+compile 'org.hashids:hashids:1.0.3'
 ```
 
 #### Import the package
