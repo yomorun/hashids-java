@@ -122,11 +122,11 @@ public class Hashids {
   }
 
   /**
-   * Encrypt numbers to string
+   * Encode numbers to string
    *
    * @param numbers
    *          the numbers to encrypt
-   * @return the encrypt string
+   * @return the encoded string
    */
   public String encode(long... numbers) {
     if (numbers.length == 0) {
@@ -145,11 +145,11 @@ public class Hashids {
   }
 
   /**
-   * Decrypt string to numbers
+   * Decode string to numbers
    *
    * @param hash
    *          the encrypt string
-   * @return decryped numbers
+   * @return decoded numbers
    */
   public long[] decode(String hash) {
     if (hash.isEmpty()) {
