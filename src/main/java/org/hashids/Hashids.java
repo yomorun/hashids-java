@@ -24,385 +24,385 @@ import static org.hashids.CharUtils.*;
  * @since 0.3.3
  */
 public class Hashids {
-    /**
-     * Max number that can be encoded with Hashids.
-     */
-    public static final long MAX_NUMBER = 9007199254740992L;
+  /**
+   * Max number that can be encoded with Hashids.
+   */
+  public static final long MAX_NUMBER = 9007199254740992L;
 
-    private static final String SPACE = " ";
-    private static final char[] DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
-    private static final char[] DEFAULT_SEPS = "cfhistuCFHISTU".toCharArray();
-    private static final char[] DEFAULT_SALT = new char[0];
+  private static final String SPACE = " ";
+  private static final char[] DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
+  private static final char[] DEFAULT_SEPS = "cfhistuCFHISTU".toCharArray();
+  private static final char[] DEFAULT_SALT = new char[0];
 
-    private static final int DEFAULT_MIN_HASH_LENGTH = 0;
-    private static final int MIN_ALPHABET_LENGTH = 16;
-    private static final double SEP_DIV = 3.5;
-    private static final int GUARD_DIV = 12;
-    private static final Pattern WORD_PATTERN = Pattern.compile("[\\w\\W]{1,12}");
+  private static final int DEFAULT_MIN_HASH_LENGTH = 0;
+  private static final int MIN_ALPHABET_LENGTH = 16;
+  private static final double SEP_DIV = 3.5;
+  private static final int GUARD_DIV = 12;
+  private static final Pattern WORD_PATTERN = Pattern.compile("[\\w\\W]{1,12}");
 
-    private final char[] salt;
-    private final int minHashLength;
-    private final char[] alphabet;
-    private final char[] seps;
-    private final char[] guards;
-    private final String guardsRegExp;
-    private final String sepsRegExp;
-    private final char[] validChars;
+  private final char[] salt;
+  private final int minHashLength;
+  private final char[] alphabet;
+  private final char[] seps;
+  private final char[] guards;
+  private final String guardsRegExp;
+  private final String sepsRegExp;
+  private final char[] validChars;
 
-    public Hashids() {
-        this(DEFAULT_SALT, DEFAULT_MIN_HASH_LENGTH, DEFAULT_ALPHABET);
+  public Hashids() {
+    this(DEFAULT_SALT, DEFAULT_MIN_HASH_LENGTH, DEFAULT_ALPHABET);
+  }
+
+  public Hashids(String salt) {
+    this(salt, DEFAULT_MIN_HASH_LENGTH);
+  }
+
+  public Hashids(String salt, int minHashLength) {
+    this((salt == null) ? null : salt.toCharArray(), minHashLength, DEFAULT_ALPHABET);
+  }
+
+  public Hashids(String salt, int minHashLength, String alphabet) {
+    this((salt == null) ? null : salt.toCharArray(),
+        minHashLength,
+        (alphabet == null) ? null : alphabet.toCharArray());
+  }
+
+  private Hashids(char[] salt, int minHashLength, char[] alphabet) {
+    assert salt != null;
+    assert minHashLength >= 0;
+    assert alphabet != null;
+
+    this.salt = salt;
+    this.minHashLength = minHashLength;
+
+    // alphabet
+    validateAlphabet(alphabet);
+
+    // seps should contain only characters present in alphabet;
+    // alphabet should not contains seps
+    char[] seps = cleanup(DEFAULT_SEPS, alphabet);
+    alphabet = removeAll(alphabet, seps);
+
+    seps = Hashids.consistentShuffle(seps, salt);
+
+    if ((seps.length == 0) || (((float) alphabet.length / seps.length) > SEP_DIV)) {
+      int seps_len = (int) Math.ceil(alphabet.length / SEP_DIV);
+
+      if (seps_len == 1) {
+        seps_len++;
+      }
+
+      if (seps_len > seps.length) {
+        final int diff = seps_len - seps.length;
+        seps = concatenate(seps, alphabet, 0, diff);
+        alphabet = copyOfRange(alphabet, diff, alphabet.length);
+      } else {
+        seps = copyOf(seps, seps_len);
+      }
     }
 
-    public Hashids(String salt) {
-        this(salt, DEFAULT_MIN_HASH_LENGTH);
+    alphabet = Hashids.consistentShuffle(alphabet, salt);
+    // use double to round up
+    final int guardCount = (int) Math.ceil((double) alphabet.length / GUARD_DIV);
+
+    char[] guards;
+    if (alphabet.length < 3) {
+      guards = copyOf(seps, guardCount);
+      seps = copyOfRange(seps, guardCount, seps.length);
+    } else {
+      guards = copyOf(alphabet, guardCount);
+      alphabet = copyOfRange(alphabet, guardCount, alphabet.length);
     }
 
-    public Hashids(String salt, int minHashLength) {
-        this((salt == null) ? null : salt.toCharArray(), minHashLength, DEFAULT_ALPHABET);
+    this.guards = guards;
+    this.alphabet = alphabet;
+    this.seps = seps;
+    this.validChars = concatenate(alphabet, guards, seps);
+    this.guardsRegExp = '[' + String.valueOf(guards) + ']';
+    this.sepsRegExp = '[' + String.valueOf(seps) + ']';
+  }
+
+  private void validateAlphabet(char[] alphabet) {
+    if (alphabet.length < MIN_ALPHABET_LENGTH) {
+      throw new IllegalArgumentException(
+          "The alphabet must contain at least " + MIN_ALPHABET_LENGTH + " unique characters.");
     }
 
-    public Hashids(String salt, int minHashLength, String alphabet) {
-        this((salt == null) ? null : salt.toCharArray(),
-                minHashLength,
-                (alphabet == null) ? null : alphabet.toCharArray());
+    for (int i = 0; i < alphabet.length; i++) {
+      if (isSpaceChar(alphabet[i])) {
+        throw new IllegalArgumentException("The alphabet cannot contain spaces.");
+      }
+
+      if ((i + 1 < alphabet.length) && (alphabet[i] == alphabet[i + 1])) {
+        throw new IllegalArgumentException("The alphabet cannot contain duplicates.");
+      }
+    }
+  }
+
+  // ---------
+
+  /**
+   * Encode numbers to string
+   *
+   * @param numbers the numbers to encode
+   * @return the encoded string
+   */
+  public String encode(long... numbers) {
+    if (numbers.length == 0) {
+      throw new IllegalArgumentException("At least one number must be specified.");
     }
 
-    private Hashids(char[] salt, int minHashLength, char[] alphabet) {
-        assert salt != null;
-        assert minHashLength >= 0;
-        assert alphabet != null;
+    for (final long number : numbers) {
+      if (number < 0) {
+        return ""; // we must throw an exception here (like the case when we compare with MAX_NUMBER)
+      }
 
-        this.salt = salt;
-        this.minHashLength = minHashLength;
+      if (number > MAX_NUMBER) {
+        throw new IllegalArgumentException("Number can not be greater than " + MAX_NUMBER + '.');
+      }
+    }
 
-        // alphabet
-        validateAlphabet(alphabet);
+    return this._encode(numbers);
+  }
 
-        // seps should contain only characters present in alphabet;
-        // alphabet should not contains seps
-        char[] seps = cleanup(DEFAULT_SEPS, alphabet);
-        alphabet = removeAll(alphabet, seps);
+  /**
+   * Decode string to numbers
+   *
+   * @param hash the encoded string
+   * @return decoded numbers
+   */
+  public long[] decode(String hash) {
+    if (hash.isEmpty()) {
+      return new long[0];
+    }
 
-        seps = Hashids.consistentShuffle(seps, salt);
+    if (!validate(hash.toCharArray(), validChars)) {
+      return new long[0];
+    }
 
-        if ((seps.length == 0) || (((float) alphabet.length / seps.length) > SEP_DIV)) {
-            int seps_len = (int) Math.ceil(alphabet.length / SEP_DIV);
+    return _decode(hash, alphabet);
+  }
 
-            if (seps_len == 1) {
-                seps_len++;
-            }
+  /**
+   * Encode hexa to string
+   *
+   * @param hexa the hexa to encode
+   * @return the encoded string
+   */
+  public String encodeHex(String hexa) {
+    if (!hexa.matches("^[0-9a-fA-F]+$")) {
+      return "";
+    }
 
-            if (seps_len > seps.length) {
-                final int diff = seps_len - seps.length;
-                seps = concatenate(seps, alphabet, 0, diff);
-                alphabet = copyOfRange(alphabet, diff, alphabet.length);
-            } else {
-                seps = copyOf(seps, seps_len);
-            }
-        }
+    final List<Long> matched = new ArrayList<Long>();
+    final Matcher matcher = WORD_PATTERN.matcher(hexa);
 
-        alphabet = Hashids.consistentShuffle(alphabet, salt);
-        // use double to round up
-        final int guardCount = (int) Math.ceil((double) alphabet.length / GUARD_DIV);
+    while (matcher.find()) {
+      matched.add(Long.parseLong('1' + matcher.group(), 16));
+    }
 
-        char[] guards;
-        if (alphabet.length < 3) {
-            guards = copyOf(seps, guardCount);
-            seps = copyOfRange(seps, guardCount, seps.length);
+    // conversion
+    final long[] result = new long[matched.size()];
+    for (int i = 0; i < matched.size(); i++) {
+      result[i] = matched.get(i);
+    }
+
+    return this.encode(result);
+  }
+
+  /**
+   * Decode string to numbers
+   *
+   * @param hash the encoded string
+   * @return decoded numbers
+   */
+  public String decodeHex(String hash) {
+    final StringBuilder result = new StringBuilder();
+    final long[] numbers = this.decode(hash);
+
+    for (final long number : numbers) {
+      result.append(Long.toHexString(number).substring(1));
+    }
+
+    return result.toString();
+  }
+
+  public static int checkedCast(long value) {
+    final int result = (int) value;
+    if (result != value) {
+      // don't use checkArgument here, to avoid boxing
+      throw new IllegalArgumentException("Out of range: " + value);
+    }
+    return result;
+  }
+
+  /* Private methods */
+
+  private String _encode(long... numbers) {
+    long numberHashInt = 0;
+    for (int i = 0; i < numbers.length; i++) {
+      numberHashInt += (numbers[i] % (i + 100));
+    }
+
+    char[] newAlphabet = alphabet;
+    final char ret = newAlphabet[(int) (numberHashInt % newAlphabet.length)];
+
+    long num;
+    long sepsIndex, guardIndex;
+    final StringBuilder buffer = new StringBuilder();
+    final StringBuilder ret_strB = new StringBuilder();
+    ret_strB.append(ret);
+    char guard;
+
+    for (int i = 0; i < numbers.length; i++) {
+      num = numbers[i];
+      buffer.setLength(0);
+      buffer.append(ret)
+          .append(salt)
+          .append(newAlphabet);
+
+      newAlphabet = Hashids.consistentShuffle(newAlphabet, buffer.substring(0, newAlphabet.length).toCharArray());
+      final String last = Hashids.hash(num, newAlphabet);
+
+      ret_strB.append(last);
+
+      if (i + 1 < numbers.length) {
+        if (last.length() > 0) {
+          num %= last.charAt(0) + i;
+          sepsIndex = (int) (num % seps.length);
         } else {
-            guards = copyOf(alphabet, guardCount);
-            alphabet = copyOfRange(alphabet, guardCount, alphabet.length);
+          sepsIndex = 0;
         }
 
-        this.guards = guards;
-        this.alphabet = alphabet;
-        this.seps = seps;
-        this.validChars = concatenate(alphabet, guards, seps);
-        this.guardsRegExp = '[' + String.valueOf(guards) + ']';
-        this.sepsRegExp = '[' + String.valueOf(seps) + ']';
+        ret_strB.append(seps[(int) sepsIndex]);
+      }
     }
 
-    private void validateAlphabet(char[] alphabet) {
-        if (alphabet.length < MIN_ALPHABET_LENGTH) {
-            throw new IllegalArgumentException(
-                    "The alphabet must contain at least " + MIN_ALPHABET_LENGTH + " unique characters.");
-        }
+    if (ret_strB.length() < minHashLength) {
+      guardIndex = (numberHashInt + (ret_strB.charAt(0))) % guards.length;
+      guard = guards[(int) guardIndex];
 
-        for (int i = 0; i < alphabet.length; i++) {
-            if (isSpaceChar(alphabet[i])) {
-                throw new IllegalArgumentException("The alphabet cannot contain spaces.");
-            }
+      ret_strB.insert(0, guard);
 
-            if ((i + 1 < alphabet.length) && (alphabet[i] == alphabet[i + 1])) {
-                throw new IllegalArgumentException("The alphabet cannot contain duplicates.");
-            }
-        }
+      if (ret_strB.length() < minHashLength) {
+        guardIndex = (numberHashInt + (ret_strB.charAt(2))) % guards.length;
+        guard = guards[(int) guardIndex];
+
+        ret_strB.append(guard);
+      }
     }
 
-    // ---------
+    final int halfLen = newAlphabet.length / 2;
+    while (ret_strB.length() < minHashLength) {
+      newAlphabet = Hashids.consistentShuffle(newAlphabet, newAlphabet);
+      ret_strB.insert(0, newAlphabet, halfLen, newAlphabet.length - halfLen)
+          .append(newAlphabet, 0, halfLen);
 
-    /**
-     * Encode numbers to string
-     *
-     * @param numbers the numbers to encode
-     * @return the encoded string
-     */
-    public String encode(long... numbers) {
-        if (numbers.length == 0) {
-            throw new IllegalArgumentException("At least one number must be specified.");
-        }
-
-        for (final long number : numbers) {
-            if (number < 0) {
-                return ""; // we must throw an exception here (like the case when we compare with MAX_NUMBER)
-            }
-
-            if (number > MAX_NUMBER) {
-                throw new IllegalArgumentException("Number can not be greater than " + MAX_NUMBER + '.');
-            }
-        }
-
-        return this._encode(numbers);
+      final int excess = ret_strB.length() - minHashLength;
+      if (excess > 0) {
+        final int start_pos = excess / 2;
+        ret_strB.replace(0, ret_strB.length(), ret_strB.substring(start_pos, start_pos + minHashLength));
+      }
     }
 
-    /**
-     * Decode string to numbers
-     *
-     * @param hash the encoded string
-     * @return decoded numbers
-     */
-    public long[] decode(String hash) {
-        if (hash.isEmpty()) {
-            return new long[0];
-        }
+    return ret_strB.toString();
+  }
 
-        if (!validate(hash.toCharArray(), validChars)) {
-            return new long[0];
-        }
+  private long[] _decode(String hash, char[] alphabet) {
+    final List<Long> ret = new ArrayList<Long>();
 
-        return _decode(hash, alphabet);
+    int i = 0;
+    String hashBreakdown = hash.replaceAll(guardsRegExp, SPACE);
+    String[] hashArray = hashBreakdown.split(SPACE);
+
+    if ((hashArray.length == 3) || (hashArray.length == 2)) {
+      i = 1;
     }
 
-    /**
-     * Encode hexa to string
-     *
-     * @param hexa the hexa to encode
-     * @return the encoded string
-     */
-    public String encodeHex(String hexa) {
-        if (!hexa.matches("^[0-9a-fA-F]+$")) {
-            return "";
+    if (hashArray.length > 0) {
+      hashBreakdown = hashArray[i];
+      if (!hashBreakdown.isEmpty()) {
+        final char lottery = hashBreakdown.charAt(0);
+
+        hashBreakdown = hashBreakdown.substring(1);
+        hashBreakdown = hashBreakdown.replaceAll(sepsRegExp, SPACE);
+        hashArray = hashBreakdown.split(SPACE);
+
+        String subHash;
+        for (final String aHashArray : hashArray) {
+          subHash = aHashArray;
+          alphabet = Hashids.consistentShuffle(alphabet, concatenate(lottery, salt, alphabet, alphabet.length));
+          ret.add(Hashids.unhash(subHash, alphabet));
         }
-
-        final List<Long> matched = new ArrayList<Long>();
-        final Matcher matcher = WORD_PATTERN.matcher(hexa);
-
-        while (matcher.find()) {
-            matched.add(Long.parseLong('1' + matcher.group(), 16));
-        }
-
-        // conversion
-        final long[] result = new long[matched.size()];
-        for (int i = 0; i < matched.size(); i++) {
-            result[i] = matched.get(i);
-        }
-
-        return this.encode(result);
+      }
     }
 
-    /**
-     * Decode string to numbers
-     *
-     * @param hash the encoded string
-     * @return decoded numbers
-     */
-    public String decodeHex(String hash) {
-        final StringBuilder result = new StringBuilder();
-        final long[] numbers = this.decode(hash);
-
-        for (final long number : numbers) {
-            result.append(Long.toHexString(number).substring(1));
-        }
-
-        return result.toString();
+    // transform from List<Long> to long[]
+    long[] arr = new long[ret.size()];
+    for (int k = 0; k < arr.length; k++) {
+      arr[k] = ret.get(k);
     }
 
-    public static int checkedCast(long value) {
-        final int result = (int) value;
-        if (result != value) {
-            // don't use checkArgument here, to avoid boxing
-            throw new IllegalArgumentException("Out of range: " + value);
-        }
-        return result;
+    if (!this.encode(arr).equals(hash)) {
+      arr = new long[0];
     }
 
-    /* Private methods */
+    return arr;
+  }
 
-    private String _encode(long... numbers) {
-        long numberHashInt = 0;
-        for (int i = 0; i < numbers.length; i++) {
-            numberHashInt += (numbers[i] % (i + 100));
-        }
-
-        char[] newAlphabet = alphabet;
-        final char ret = newAlphabet[(int) (numberHashInt % newAlphabet.length)];
-
-        long num;
-        long sepsIndex, guardIndex;
-        final StringBuilder buffer = new StringBuilder();
-        final StringBuilder ret_strB = new StringBuilder();
-        ret_strB.append(ret);
-        char guard;
-
-        for (int i = 0; i < numbers.length; i++) {
-            num = numbers[i];
-            buffer.setLength(0);
-            buffer.append(ret)
-                    .append(salt)
-                    .append(newAlphabet);
-
-            newAlphabet = Hashids.consistentShuffle(newAlphabet, buffer.substring(0, newAlphabet.length).toCharArray());
-            final String last = Hashids.hash(num, newAlphabet);
-
-            ret_strB.append(last);
-
-            if (i + 1 < numbers.length) {
-                if (last.length() > 0) {
-                    num %= last.charAt(0) + i;
-                    sepsIndex = (int) (num % seps.length);
-                } else {
-                    sepsIndex = 0;
-                }
-
-                ret_strB.append(seps[(int) sepsIndex]);
-            }
-        }
-
-        if (ret_strB.length() < minHashLength) {
-            guardIndex = (numberHashInt + (ret_strB.charAt(0))) % guards.length;
-            guard = guards[(int) guardIndex];
-
-            ret_strB.insert(0, guard);
-
-            if (ret_strB.length() < minHashLength) {
-                guardIndex = (numberHashInt + (ret_strB.charAt(2))) % guards.length;
-                guard = guards[(int) guardIndex];
-
-                ret_strB.append(guard);
-            }
-        }
-
-        final int halfLen = newAlphabet.length / 2;
-        while (ret_strB.length() < minHashLength) {
-            newAlphabet = Hashids.consistentShuffle(newAlphabet, newAlphabet);
-            ret_strB.insert(0, newAlphabet, halfLen, newAlphabet.length - halfLen)
-                    .append(newAlphabet, 0, halfLen);
-
-            final int excess = ret_strB.length() - minHashLength;
-            if (excess > 0) {
-                final int start_pos = excess / 2;
-                ret_strB.replace(0, ret_strB.length(), ret_strB.substring(start_pos, start_pos + minHashLength));
-            }
-        }
-
-        return ret_strB.toString();
+  private static char[] consistentShuffle(char[] alphabet, char[] salt) {
+    if (salt.length <= 0) {
+      return alphabet.clone();
     }
 
-    private long[] _decode(String hash, char[] alphabet) {
-        final List<Long> ret = new ArrayList<Long>();
+    int asc_val, j;
+    final char[] result = alphabet.clone();
+    for (int i = result.length - 1, v = 0, p = 0; i > 0; i--, v++) {
+      v %= salt.length;
+      asc_val = salt[v];
+      p += asc_val;
+      j = (asc_val + v + p) % i;
 
-        int i = 0;
-        String hashBreakdown = hash.replaceAll(guardsRegExp, SPACE);
-        String[] hashArray = hashBreakdown.split(SPACE);
-
-        if ((hashArray.length == 3) || (hashArray.length == 2)) {
-            i = 1;
-        }
-
-        if (hashArray.length > 0) {
-            hashBreakdown = hashArray[i];
-            if (!hashBreakdown.isEmpty()) {
-                final char lottery = hashBreakdown.charAt(0);
-
-                hashBreakdown = hashBreakdown.substring(1);
-                hashBreakdown = hashBreakdown.replaceAll(sepsRegExp, SPACE);
-                hashArray = hashBreakdown.split(SPACE);
-
-                String subHash;
-                for (final String aHashArray : hashArray) {
-                    subHash = aHashArray;
-                    alphabet = Hashids.consistentShuffle(alphabet, concatenate(lottery, salt, alphabet, alphabet.length));
-                    ret.add(Hashids.unhash(subHash, alphabet));
-                }
-            }
-        }
-
-        // transform from List<Long> to long[]
-        long[] arr = new long[ret.size()];
-        for (int k = 0; k < arr.length; k++) {
-            arr[k] = ret.get(k);
-        }
-
-        if (!this.encode(arr).equals(hash)) {
-            arr = new long[0];
-        }
-
-        return arr;
+      final char tmp = result[j];
+      result[j] = result[i];
+      result[i] = tmp;
     }
 
-    private static char[] consistentShuffle(char[] alphabet, char[] salt) {
-        if (salt.length <= 0) {
-            return alphabet.clone();
-        }
+    return result;
+  }
 
-        int asc_val, j;
-        final char[] result = alphabet.clone();
-        for (int i = result.length - 1, v = 0, p = 0; i > 0; i--, v++) {
-            v %= salt.length;
-            asc_val = salt[v];
-            p += asc_val;
-            j = (asc_val + v + p) % i;
+  private static String hash(long input, char[] alphabet) {
+    final StringBuilder hash = new StringBuilder();
+    final int alphabetLen = alphabet.length;
 
-            final char tmp = result[j];
-            result[j] = result[i];
-            result[i] = tmp;
-        }
+    do {
+      final int index = (int) (input % alphabetLen);
+      if (index >= 0 && index < alphabet.length) {
+        hash.insert(0, alphabet[index]);
+      }
+      input /= alphabetLen;
+    } while (input > 0);
 
-        return result;
+    return hash.toString();
+  }
+
+  private static Long unhash(String input, char[] alphabet) {
+    long number = 0, pos;
+
+    for (int i = 0; i < input.length(); i++) {
+      pos = indexOf(alphabet, input.charAt(i));
+      number = number * alphabet.length + pos;
     }
 
-    private static String hash(long input, char[] alphabet) {
-        final StringBuilder hash = new StringBuilder();
-        final int alphabetLen = alphabet.length;
+    return number;
+  }
 
-        do {
-            final int index = (int) (input % alphabetLen);
-            if (index >= 0 && index < alphabet.length) {
-                hash.insert(0, alphabet[index]);
-            }
-            input /= alphabetLen;
-        } while (input > 0);
-
-        return hash.toString();
-    }
-
-    private static Long unhash(String input, char[] alphabet) {
-        long number = 0, pos;
-
-        for (int i = 0; i < input.length(); i++) {
-            pos = indexOf(alphabet, input.charAt(i));
-            number = number * alphabet.length + pos;
-        }
-
-        return number;
-    }
-
-    /**
-     * Get Hashid algorithm version.
-     *
-     * @return Hashids algorithm version implemented.
-     */
-    public String getVersion() {
-        return "1.0.0";
-    }
+  /**
+   * Get Hashid algorithm version.
+   *
+   * @return Hashids algorithm version implemented.
+   */
+  public String getVersion() {
+    return "1.0.0";
+  }
 }
