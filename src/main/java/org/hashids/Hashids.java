@@ -309,20 +309,21 @@ public class Hashids {
   }
 
   private long[] _decode(String hash, char[] alphabet) {
-    final List<Long> ret = new ArrayList<Long>();
+    long[] arr = new long[hash.length()];
+    int retIdx = 0;
 
     int i = 0;
     String hashBreakdown = hash.replaceAll(guardsRegExp, SPACE);
     String[] hashArray = hashBreakdown.split(SPACE);
 
-    if ((hashArray.length == 3) || (hashArray.length == 2)) {
+    if ((hashArray.length == 2) || (hashArray.length == 3)) {
       i = 1;
     }
 
     if (hashArray.length > 0) {
       hashBreakdown = hashArray[i];
       if (!hashBreakdown.isEmpty()) {
-        final char lottery = hashBreakdown.charAt(0);
+        final char[] lottery = new char[] { hashBreakdown.charAt(0) };
 
         hashBreakdown = hashBreakdown.substring(1);
         hashBreakdown = hashBreakdown.replaceAll(sepsRegExp, SPACE);
@@ -331,23 +332,21 @@ public class Hashids {
         String subHash;
         for (final String aHashArray : hashArray) {
           subHash = aHashArray;
-          alphabet = Hashids.consistentShuffle(alphabet, concatenate(lottery, salt, alphabet, alphabet.length));
-          ret.add(Hashids.unhash(subHash, alphabet));
+          alphabet = Hashids.consistentShuffle(
+                  alphabet,
+                  copyOfRange(concatenate(lottery, salt, alphabet), 0, alphabet.length));
+          arr[retIdx++] = Hashids.unhash(subHash, alphabet);
         }
       }
     }
 
-    // transform from List<Long> to long[]
-    long[] arr = new long[ret.size()];
-    for (int k = 0; k < arr.length; k++) {
-      arr[k] = ret.get(k);
-    }
+    // TODO remove this comment
+    // we don't need this check (it can be done explicitly by the requester)
+    // if (!encode(arr).equals(hash)) {
+    //  arr = new long[0];
+    // }
 
-    if (!this.encode(arr).equals(hash)) {
-      arr = new long[0];
-    }
-
-    return arr;
+    return copyOf(arr, retIdx);
   }
 
   private static char[] consistentShuffle(char[] alphabet, char[] salt) {
@@ -386,7 +385,7 @@ public class Hashids {
     return hash.toString();
   }
 
-  private static Long unhash(String input, char[] alphabet) {
+  private static long unhash(String input, char[] alphabet) {
     long number = 0, pos;
 
     for (int i = 0; i < input.length(); i++) {
