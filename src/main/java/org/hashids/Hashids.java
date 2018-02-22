@@ -340,13 +340,13 @@ public class Hashids {
       }
     }
 
-    // TODO remove this comment
-    // we don't need this check (it can be done explicitly by the requester)
-    // if (!encode(arr).equals(hash)) {
-    //  arr = new long[0];
-    // }
+    arr = copyOf(arr, retIdx);
 
-    return copyOf(arr, retIdx);
+    if (!encode(arr).equals(hash)) {
+      return new long[0];
+    }
+
+    return arr;
   }
 
   private static char[] consistentShuffle(char[] alphabet, char[] salt) {
