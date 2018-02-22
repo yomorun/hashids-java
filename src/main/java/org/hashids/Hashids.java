@@ -334,7 +334,7 @@ public class Hashids {
           subHash = aHashArray;
           alphabet = Hashids.consistentShuffle(
                   alphabet,
-                  copyOfRange(concatenate(lottery, salt, alphabet), 0, alphabet.length));
+                  copyOf(concatenate(lottery, salt, alphabet), alphabet.length));
           arr[retIdx++] = Hashids.unhash(subHash, alphabet);
         }
       }
