@@ -402,6 +402,6 @@ public class Hashids {
    * @return Hashids algorithm version implemented.
    */
   public String getVersion() {
-    return "1.0.0";
+    return "1.0.4-SNAPSHOT";
   }
 }
