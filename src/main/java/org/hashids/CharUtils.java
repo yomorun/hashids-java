@@ -1,7 +1,7 @@
 package org.hashids;
 
 import static java.lang.System.arraycopy;
-import static java.util.Arrays.copyOfRange;
+import static java.util.Arrays.copyOf;
 
 public final class CharUtils {
 
@@ -59,7 +59,7 @@ public final class CharUtils {
       }
     }
 
-    return copyOfRange(result, 0, i);
+    return copyOf(result, i);
   }
 
   public static char[] removeAll(char[] source, char[] charsToRemove) {
@@ -86,7 +86,7 @@ public final class CharUtils {
       }
     }
 
-    return copyOfRange(result, 0, i);
+    return copyOf(result, i);
   }
 
   public static boolean validate(char[] source, char[] allowedChars) {
