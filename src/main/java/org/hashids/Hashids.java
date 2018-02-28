@@ -68,9 +68,17 @@ public class Hashids {
   }
 
   private Hashids(char[] salt, int minHashLength, char[] alphabet) {
-    assert salt != null;
-    assert minHashLength >= 0;
-    assert alphabet != null;
+    if (salt == null) {
+      throw new IllegalArgumentException("The salt cannot be null,");
+    }
+
+    if (minHashLength <= 0) {
+      throw new IllegalArgumentException("Minimum hash length must be greater than zero,");
+    }
+
+    if (alphabet == null) {
+      throw new IllegalArgumentException("The alphabet cannot be null,");
+    }
 
     this.salt = salt;
     this.minHashLength = minHashLength;
