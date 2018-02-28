@@ -3,13 +3,13 @@ package org.hashids;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOf;
 
-public final class CharUtils {
+final class CharUtils {
 
   private CharUtils() {
     throw new UnsupportedOperationException();
   }
 
-  public static char[] concatenate(char[] arrA, char[] arrB, char[] arrC) {
+  static char[] concatenate(char[] arrA, char[] arrB, char[] arrC) {
     final char[] result = new char[arrA.length + arrB.length + arrC.length];
 
     arraycopy(arrA, 0, result, 0, arrA.length);
@@ -19,7 +19,7 @@ public final class CharUtils {
     return result;
   }
 
-  public static char[] concatenate(char[] arrA, char[] arrB, int bFrom, int bTo) {
+  static char[] concatenate(char[] arrA, char[] arrB, int bFrom, int bTo) {
     final int bCopyLength = bTo - bFrom;
     final char[] result = new char[arrA.length + bCopyLength];
 
@@ -29,7 +29,7 @@ public final class CharUtils {
     return result;
   }
 
-  public static int indexOf(char[] source, char c) {
+  static int indexOf(char[] source, char c) {
     int i = 0;
 
     for (final char s : source) {
@@ -42,7 +42,7 @@ public final class CharUtils {
     return i;
   }
 
-  public static char[] cleanup(char[] source, char[] allowedChars) {
+  static char[] cleanup(char[] source, char[] allowedChars) {
     if ((source == null) || (allowedChars == null)) {
       return source;
     }
@@ -62,7 +62,7 @@ public final class CharUtils {
     return copyOf(result, i);
   }
 
-  public static char[] removeAll(char[] source, char[] charsToRemove) {
+  static char[] removeAll(char[] source, char[] charsToRemove) {
     if ((source == null) || (charsToRemove == null)) {
       return source;
     }
@@ -89,7 +89,7 @@ public final class CharUtils {
     return copyOf(result, i);
   }
 
-  public static boolean validate(char[] source, char[] allowedChars) {
+  static boolean validate(char[] source, char[] allowedChars) {
     boolean found;
 
     for (final char s : source) {
@@ -109,4 +109,5 @@ public final class CharUtils {
 
     return true;
   }
+
 }

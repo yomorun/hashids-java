@@ -72,8 +72,8 @@ public class Hashids {
       throw new IllegalArgumentException("The salt cannot be null,");
     }
 
-    if (minHashLength <= 0) {
-      throw new IllegalArgumentException("Minimum hash length must be greater than zero,");
+    if (minHashLength < 0) {
+      throw new IllegalArgumentException("The minimum hash length must be positive,");
     }
 
     if (alphabet == null) {
