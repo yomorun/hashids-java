@@ -190,6 +190,18 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>1.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-generator-annprocess</artifactId>
+      <version>1.9</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <contributors>
@@ -208,7 +220,7 @@
       <url>https://github.com/TheConstructor</url>
     </contributor>
     <contributor>
-      <name>Mihai CAZACU</name>
+      <name>Mihai Cazacu</name>
       <url>https://github.com/cazacugmihai</url>
     </contributor>
   </contributors>

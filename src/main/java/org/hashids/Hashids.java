@@ -133,8 +133,10 @@ public class Hashids {
         throw new IllegalArgumentException("The alphabet cannot contain spaces.");
       }
 
-      if ((i + 1 < alphabet.length) && (alphabet[i] == alphabet[i + 1])) {
-        throw new IllegalArgumentException("The alphabet cannot contain duplicates.");
+      for (int j = i + 1; j < alphabet.length; j++) {
+        if (alphabet[i] == alphabet[j]) {
+          throw new IllegalArgumentException("The alphabet cannot contain duplicates.");
+        }
       }
     }
   }
