@@ -27,7 +27,7 @@ public class HashidsTest {
   public void test_wrong_decoding() {
     final Hashids a = new Hashids("this is my pepper");
     final long[] b = a.decode("NkK9");
-    Assert.assertEquals(b.length, 0);
+    Assert.assertEquals(0, b.length);
   }
 
   @Test
@@ -38,10 +38,10 @@ public class HashidsTest {
     long[] res2;
     final Hashids a = new Hashids("this is my salt");
     res = a.encode(num_to_hash);
-    Assert.assertEquals(res, expected);
+    Assert.assertEquals(expected, res);
     res2 = a.decode(expected);
-    Assert.assertEquals(res2.length, 1);
-    Assert.assertEquals(res2[0], num_to_hash);
+    Assert.assertEquals(1, res2.length);
+    Assert.assertEquals(num_to_hash, res2[0]);
   }
 
   @Test
@@ -52,9 +52,9 @@ public class HashidsTest {
     long[] res2;
     final Hashids a = new Hashids("this is my salt");
     res = a.encode(num_to_hash);
-    Assert.assertEquals(res, expected);
+    Assert.assertEquals(expected, res);
     res2 = a.decode(expected);
-    Assert.assertEquals(res2.length, num_to_hash.length);
+    Assert.assertEquals(num_to_hash.length, res2.length);
     Assert.assertTrue(Arrays.equals(res2, num_to_hash));
   }
 
@@ -68,7 +68,7 @@ public class HashidsTest {
     res = a.encode(num_to_hash);
     Assert.assertEquals(expected, res);
     res2 = a.decode(expected);
-    Assert.assertEquals(res2[0], num_to_hash);
+    Assert.assertEquals(num_to_hash, res2[0]);
   }
 
   @Test
@@ -79,10 +79,10 @@ public class HashidsTest {
     long[] res2;
     final Hashids a = new Hashids("this is my salt", 8);
     res = a.encode(num_to_hash);
-    Assert.assertEquals(res, expected);
+    Assert.assertEquals(expected, res);
     res2 = a.decode(expected);
-    Assert.assertEquals(res2.length, 1);
-    Assert.assertEquals(res2[0], num_to_hash);
+    Assert.assertEquals(1, res2.length);
+    Assert.assertEquals(num_to_hash, res2[0]);
   }
 
   @Test
@@ -93,9 +93,9 @@ public class HashidsTest {
     long[] res2;
     final Hashids a = new Hashids("this is my salt");
     res = a.encode(num_to_hash);
-    Assert.assertEquals(res, expected);
+    Assert.assertEquals(expected, res);
     res2 = a.decode(expected);
-    Assert.assertEquals(res2.length, num_to_hash.length);
+    Assert.assertEquals(num_to_hash.length, res2.length);
     Assert.assertTrue(Arrays.equals(res2, num_to_hash));
   }
 
@@ -109,7 +109,7 @@ public class HashidsTest {
     res = a.encode(num_to_hash);
     Assert.assertEquals(res, expected);
     res2 = a.decode(expected);
-    Assert.assertEquals(res2.length, num_to_hash.length);
+    Assert.assertEquals(num_to_hash.length, res2.length);
     Assert.assertTrue(Arrays.equals(res2, num_to_hash));
   }
 
@@ -117,17 +117,17 @@ public class HashidsTest {
   public void test_randomness_for_incrementing() {
     Hashids a;
     a = new Hashids("this is my salt");
-    Assert.assertEquals(a.encode(1L), "NV");
-    Assert.assertEquals(a.encode(2L), "6m");
-    Assert.assertEquals(a.encode(3L), "yD");
-    Assert.assertEquals(a.encode(4L), "2l");
-    Assert.assertEquals(a.encode(5L), "rD");
+    Assert.assertEquals("NV", a.encode(1L));
+    Assert.assertEquals("6m", a.encode(2L));
+    Assert.assertEquals("yD", a.encode(3L));
+    Assert.assertEquals("2l", a.encode(4L));
+    Assert.assertEquals("rD", a.encode(5L));
   }
 
   @Test
   public void test_for_vlues_greater_int_maxval() {
     final Hashids a = new Hashids("this is my salt");
-    Assert.assertEquals(a.encode(9876543210123L), "Y8r7W1kNN");
+    Assert.assertEquals("Y8r7W1kNN", a.encode(9876543210123L));
   }
 
   @Test
@@ -138,10 +138,10 @@ public class HashidsTest {
     long[] res2;
     final Hashids a = new Hashids("this is my salt");
     res = a.encode(num_to_hash);
-    Assert.assertEquals(res, expected);
+    Assert.assertEquals(expected, res);
     res2 = a.decode(expected);
-    Assert.assertEquals(res2.length, 1);
-    Assert.assertEquals(res2[0], num_to_hash);
+    Assert.assertEquals(1, res2.length);
+    Assert.assertEquals(num_to_hash, res2[0]);
   }
 
   @Test
@@ -154,7 +154,7 @@ public class HashidsTest {
     res = a.encode(num_to_hash);
     Assert.assertEquals(expected, res);
     res2 = a.decode(expected);
-    Assert.assertEquals(res2[0], num_to_hash);
+    Assert.assertEquals(num_to_hash, res2[0]);
   }
 
   @Test
@@ -189,13 +189,13 @@ public class HashidsTest {
   public void test_issue45() {
     Hashids hashids = new Hashids("this is my salt");
     long[] numbers = hashids.decode("()");
-    Assert.assertEquals(numbers.length, 0);
+    Assert.assertEquals(0, numbers.length);
     numbers = hashids.decode("[]");
-    Assert.assertEquals(numbers.length, 0);
+    Assert.assertEquals(0, numbers.length);
     numbers = hashids.decode("недействительный");
-    Assert.assertEquals(numbers.length, 0);
+    Assert.assertEquals(0, numbers.length);
     numbers = hashids.decode("無效");
-    Assert.assertEquals(numbers.length, 0);
+    Assert.assertEquals(0, numbers.length);
   }
 
 }
