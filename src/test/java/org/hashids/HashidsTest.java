@@ -17,7 +17,7 @@ public class HashidsTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void test_large_number_not_supported() throws Exception {
+  public void test_large_number_not_supported() {
     final long num_to_hash = 9007199254740993L;
     final Hashids a = new Hashids("this is my salt");
     a.encode(num_to_hash);
@@ -179,14 +179,14 @@ public class HashidsTest {
   }
 
   @Test
-  public void test_issue32() throws Exception {
+  public void test_issue32() {
     final long num_to_hash = -1;
     final Hashids a = new Hashids("this is my salt");
     Assert.assertEquals("", a.encode(num_to_hash));
   }
 
   @Test
-  public void test_issue45() throws Exception {
+  public void test_issue45() {
     Hashids hashids = new Hashids("this is my salt");
     long[] numbers = hashids.decode("()");
     Assert.assertEquals(numbers.length, 0);
