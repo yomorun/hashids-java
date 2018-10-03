@@ -198,4 +198,13 @@ public class HashidsTest {
     Assert.assertEquals(numbers.length, 0);
   }
 
+  @Test
+  public void test_decodeHex() {
+    final long number_less_than_16 = 15;
+
+    Hashids hashids = new Hashids("this is my salt");
+    final String hash = hashids.encode(number_less_than_16);
+    final String res = hashids.decodeHex(hash);
+    Assert.assertEquals(Long.toHexString(number_less_than_16), res);
+  }
 }
