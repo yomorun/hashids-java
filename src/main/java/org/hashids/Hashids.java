@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  *
  * @author <a href="mailto:fanweixiao@gmail.com">fanweixiao</a>
  * @author <a href="mailto:terciofilho@gmail.com">Tercio Gaudencio Filho</a>
+ * @author <a href="mailto:randolf@richardson.tw">Randolf Richardson</a>
  * @since 0.3.3
  */
 public class Hashids {
@@ -38,21 +39,58 @@ public class Hashids {
   private final String seps;
   private final String guards;
 
+  /**
+   * Instantiate Hashids
+   */
   public Hashids() {
     this(DEFAULT_SALT);
   }
 
+  /**
+   * Instantiate Hashids
+   *
+   * @param salt (NULL defaults to "")
+   */
   public Hashids(String salt) {
     this(salt, 0);
   }
 
+  /**
+   * Instantiate Hashids
+   *
+   * @param salt (NULL defaults to "")
+   * @param minHashLength (0 is the default)
+   */
   public Hashids(String salt, int minHashLength) {
     this(salt, minHashLength, DEFAULT_ALPHABET);
   }
 
+  /**
+   * Instantiate Hashids
+   *
+   * @param salt (NULL defaults to "")
+   * @param minHashLength (0 is the default)
+   * @param alphabet (NULL defaults to "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+   */
   public Hashids(String salt, int minHashLength, String alphabet) {
+    this(salt, minHashLength, DEFAULT_ALPHABET, DEFAULT_SEPS);
+  }
+
+  /**
+   * Instantiate Hashids
+   *
+   * Note: Specifiying separators (or none) that differ from the default will yield a different set of Hashids because separators-based character avoidance effects which characters can be used in encoding/decoding
+   *
+   * @param salt (NULL defaults to "")
+   * @param minHashLength (0 is the default)
+   * @param alphabet (NULL defaults to "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+   * @param seps (NULL defaults to "cfhistuCFHISTU"; use "" to specify none)
+   */
+  public Hashids(String salt, int minHashLength, String alphabet, String seps) {
     this.salt = salt != null ? salt : DEFAULT_SALT;
     this.minHashLength = minHashLength > 0 ? minHashLength : DEFAULT_MIN_HASH_LENGTH;
+    if (alphabet == null) alphabet = DEFAULT_ALPHABET;
+    if (seps == null) seps = DEFAULT_SEPS;
 
     final StringBuilder uniqueAlphabet = new StringBuilder();
     for (int i = 0; i < alphabet.length(); i++) {
@@ -74,7 +112,6 @@ public class Hashids {
 
     // seps should contain only characters present in alphabet;
     // alphabet should not contains seps
-    String seps = DEFAULT_SEPS;
     for (int i = 0; i < seps.length(); i++) {
       final int j = alphabet.indexOf(seps.charAt(i));
       if (j == -1) {
