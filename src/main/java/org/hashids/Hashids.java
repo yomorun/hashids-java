@@ -31,12 +31,14 @@ public class Hashids {
   private static final int MIN_ALPHABET_LENGTH = 16;
   private static final double SEP_DIV = 3.5;
   private static final int GUARD_DIV = 12;
+  private static final int DEFAULT_HASH_MOD_BASE = 100;
 
   private final String salt;
   private final int minHashLength;
   private final String alphabet;
   private final String seps;
   private final String guards;
+  private final int hashModBase;
 
   public Hashids() {
     this(DEFAULT_SALT);
@@ -47,12 +49,21 @@ public class Hashids {
   }
 
   public Hashids(String salt, int minHashLength) {
-    this(salt, minHashLength, DEFAULT_ALPHABET);
+    this(salt, minHashLength, DEFAULT_ALPHABET, DEFAULT_HASH_MOD_BASE);
   }
 
+  public Hashids(String salt, int minHashLength, int hashModBase) {
+	    this(salt, minHashLength, DEFAULT_ALPHABET, hashModBase);
+	  }
+
   public Hashids(String salt, int minHashLength, String alphabet) {
+    this(salt, minHashLength, alphabet, DEFAULT_HASH_MOD_BASE);
+  }
+
+  public Hashids(String salt, int minHashLength, String alphabet, int hashModBase) {
     this.salt = salt != null ? salt : DEFAULT_SALT;
     this.minHashLength = minHashLength > 0 ? minHashLength : DEFAULT_MIN_HASH_LENGTH;
+    this.hashModBase = hashModBase != 0? hashModBase : DEFAULT_HASH_MOD_BASE;
 
     final StringBuilder uniqueAlphabet = new StringBuilder();
     for (int i = 0; i < alphabet.length(); i++) {
@@ -226,7 +237,7 @@ public class Hashids {
   private String _encode(long... numbers) {
     long numberHashInt = 0;
     for (int i = 0; i < numbers.length; i++) {
-      numberHashInt += (numbers[i] % (i + 100));
+      numberHashInt += (numbers[i] % (i + hashModBase));
     }
     String alphabet = this.alphabet;
     final char ret = alphabet.charAt((int) (numberHashInt % alphabet.length()));
