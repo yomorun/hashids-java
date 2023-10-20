@@ -61,8 +61,6 @@ public class Hashids {
       }
     }
 
-    alphabet = uniqueAlphabet.toString();
-
     if (alphabet.length() < MIN_ALPHABET_LENGTH) {
       throw new IllegalArgumentException(
           "alphabet must contain at least " + MIN_ALPHABET_LENGTH + " unique characters");
@@ -74,19 +72,17 @@ public class Hashids {
 
     // seps should contain only characters present in alphabet;
     // alphabet should not contains seps
-    String seps = DEFAULT_SEPS;
-    for (int i = 0; i < seps.length(); i++) {
-      final int j = alphabet.indexOf(seps.charAt(i));
-      if (j == -1) {
-        seps = seps.substring(0, i) + " " + seps.substring(i + 1);
-      } else {
-        alphabet = alphabet.substring(0, j) + " " + alphabet.substring(j + 1);
+    StringBuilder sepsB = new StringBuilder();
+    for (int i = 0; i < DEFAULT_SEPS.length(); i++) {
+      final int j = uniqueAlphabet.indexOf(String.valueOf(DEFAULT_SEPS.charAt(i)));
+      if (j != -1) {
+        sepsB.append(DEFAULT_SEPS.charAt(i));
+        uniqueAlphabet.delete(j, j+1);
       }
     }
 
-    alphabet = alphabet.replaceAll("\\s+", "");
-    seps = seps.replaceAll("\\s+", "");
-    seps = Hashids.consistentShuffle(seps, this.salt);
+    alphabet = uniqueAlphabet.toString();
+    String seps = Hashids.consistentShuffle(sepsB.toString(), this.salt);
 
     if ((seps.isEmpty()) || (((float) alphabet.length() / seps.length()) > SEP_DIV)) {
       int seps_len = (int) Math.ceil(alphabet.length() / SEP_DIV);
@@ -229,90 +225,87 @@ public class Hashids {
       numberHashInt += (numbers[i] % (i + 100));
     }
     String alphabet = this.alphabet;
-    final char ret = alphabet.charAt((int) (numberHashInt % alphabet.length()));
+    final int alphabetLen = alphabet.length();
+    final int sepsLen = this.seps.length();
+    final int numbersLen = numbers.length;
+    final char ret = alphabet.charAt((int) (numberHashInt % alphabetLen));
 
     long num;
     long sepsIndex, guardIndex;
-    String buffer;
-    final StringBuilder ret_strB = new StringBuilder(this.minHashLength);
-    ret_strB.append(ret);
+    StringBuilder buffer = new StringBuilder();
+    final StringBuilder ret_str = new StringBuilder(this.minHashLength).append(ret);
     char guard;
 
-    for (int i = 0; i < numbers.length; i++) {
+    for (int i = 0; i < numbersLen; i++) {
       num = numbers[i];
-      buffer = ret + this.salt + alphabet;
+      buffer.setLength(0);
+      buffer.append(ret).append(this.salt).append(alphabet);
 
-      alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
-      final String last = Hashids.hash(num, alphabet);
+      alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabetLen));
+      final String last = Hashids.hash(numbers[i], alphabet);
 
-      ret_strB.append(last);
+      ret_str.append(last);
 
-      if (i + 1 < numbers.length) {
+      if (i + 1 < numbersLen) {
+        sepsIndex = 0;
         if (last.length() > 0) {
           num %= (last.charAt(0) + i);
-          sepsIndex = (int) (num % this.seps.length());
-        } else {
-          sepsIndex = 0;
+          sepsIndex = num % sepsLen;
         }
-        ret_strB.append(this.seps.charAt((int) sepsIndex));
+        ret_str.append(this.seps.charAt((int) sepsIndex));
       }
     }
 
-    String ret_str = ret_strB.toString();
     if (ret_str.length() < this.minHashLength) {
       guardIndex = (numberHashInt + (ret_str.charAt(0))) % this.guards.length();
       guard = this.guards.charAt((int) guardIndex);
 
-      ret_str = guard + ret_str;
+      ret_str.insert(0, guard);
 
       if (ret_str.length() < this.minHashLength) {
         guardIndex = (numberHashInt + (ret_str.charAt(2))) % this.guards.length();
         guard = this.guards.charAt((int) guardIndex);
 
-        ret_str += guard;
+        ret_str.append(guard);
       }
     }
 
     final int halfLen = alphabet.length() / 2;
     while (ret_str.length() < this.minHashLength) {
       alphabet = Hashids.consistentShuffle(alphabet, alphabet);
-      ret_str = alphabet.substring(halfLen) + ret_str + alphabet.substring(0, halfLen);
+      ret_str.insert(0, alphabet.substring(halfLen)).append(alphabet, 0, halfLen);
       final int excess = ret_str.length() - this.minHashLength;
       if (excess > 0) {
         final int start_pos = excess / 2;
-        ret_str = ret_str.substring(start_pos, start_pos + this.minHashLength);
+        ret_str.delete(start_pos + this.minHashLength, ret_str.length()).delete(0, start_pos);
       }
     }
 
-    return ret_str;
+    return ret_str.toString();
   }
 
   private long[] _decode(String hash, String alphabet) {
     final ArrayList<Long> ret = new ArrayList<Long>();
+    final int alphabetLen = alphabet.length();
 
     int i = 0;
-    final String regexp = "[" + this.guards + "]";
-    String hashBreakdown = hash.replaceAll(regexp, " ");
-    String[] hashArray = hashBreakdown.split(" ");
+    String[] hashArray = hash.split(Hashids.toSplitString(this.guards));
 
     if (hashArray.length == 3 || hashArray.length == 2) {
       i = 1;
     }
 
     if (hashArray.length > 0) {
-      hashBreakdown = hashArray[i];
-      if (!hashBreakdown.isEmpty()) {
-        final char lottery = hashBreakdown.charAt(0);
+      if (!hashArray[i].isEmpty()) {
+        final char lottery = hashArray[i].charAt(0);;
 
-        hashBreakdown = hashBreakdown.substring(1);
-        hashBreakdown = hashBreakdown.replaceAll("[" + this.seps + "]", " ");
-        hashArray = hashBreakdown.split(" ");
+        hashArray = hashArray[i].substring(1).split(Hashids.toSplitString(this.seps));
 
-        String subHash, buffer;
-        for (final String aHashArray : hashArray) {
-          subHash = aHashArray;
-          buffer = lottery + this.salt + alphabet;
-          alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
+        StringBuilder buffer = new StringBuilder();
+        for (final String subHash : hashArray) {
+          buffer.setLength(0);
+          buffer.append(lottery).append(this.salt).append(alphabet);
+          alphabet = Hashids.consistentShuffle(alphabet, buffer.substring(0, alphabetLen));
           ret.add(Hashids.unhash(subHash, alphabet));
         }
       }
@@ -335,11 +328,12 @@ public class Hashids {
     if (salt.length() <= 0) {
       return alphabet;
     }
+    int saltLen = salt.length();
 
     int asc_val, j;
     final char[] tmpArr = alphabet.toCharArray();
     for (int i = tmpArr.length - 1, v = 0, p = 0; i > 0; i--, v++) {
-      v %= salt.length();
+      v %= saltLen;
       asc_val = salt.charAt(v);
       p += asc_val;
       j = (asc_val + v + p) % i;
@@ -352,29 +346,34 @@ public class Hashids {
   }
 
   private static String hash(long input, String alphabet) {
-    String hash = "";
+    StringBuilder hash = new StringBuilder();
     final int alphabetLen = alphabet.length();
 
     do {
       final int index = (int) (input % alphabetLen);
       if (index >= 0 && index < alphabet.length()) {
-        hash = alphabet.charAt(index) + hash;
+        hash.insert(0, alphabet.charAt(index));
       }
       input /= alphabetLen;
     } while (input > 0);
 
-    return hash;
+    return hash.toString();
   }
 
   private static Long unhash(String input, String alphabet) {
     long number = 0, pos;
+    final int alphabetLen = alphabet.length();
 
     for (int i = 0; i < input.length(); i++) {
       pos = alphabet.indexOf(input.charAt(i));
-      number = number * alphabet.length() + pos;
+      number = number * alphabetLen + pos;
     }
 
     return number;
+  }
+
+  private static String toSplitString(String str) {
+    return String.join("|", str.split(""));
   }
 
   /**
